@@ -144,12 +144,6 @@ def main(args, loglevel):
                     #run spell on data?
                     REGISTERED_SPELLS[spell_action](file_path)
 
-
-
-
-            
-
-
         except IndexError as e:
             logging.error("Must provide spell name, example...\n grim holy heal MANA_LOCATION")
             sys.exit(-1)
@@ -161,6 +155,60 @@ def main(args, loglevel):
 
     elif main_arg == "ui":
         print("ui started")
+
+
+    elif main_arg == "cast":
+        print("cast started")
+
+        try:
+            path_to_spells = args.argument[1]
+            logging.info("spells path: " + path_to_spells)
+
+
+            with open(path_to_spells) as json_file:
+                grim = json.load(json_file)
+                logging.info(grim)
+
+                grim_name = grim["name"]
+                grim_value = grim["value"]
+                grim_pipeline = grim["spells"]
+
+                #Cast spell
+                logging.info("Running grimorie "+grim_name)
+                logging.info("This grimorie is good because... "+grim_value)
+
+                spell_tomb = {}
+
+                for spell in grim_pipeline:
+                    logging.debug(spell)
+                    #run first spell?
+                    spell_type = spell["spell_type"]
+                    spell_name = spell["spell_name"]
+                    spell_info = spell["spell_info"]
+                    spell_inputs = spell["spell_inputs"]
+                    spell_output = spell["spell_output"]
+
+                    for spell_input in spell_inputs.keys():
+                        #only add input if not in tomb
+                        if spell_input not in spell_tomb:
+                            print("adding thisto spelltomb :"+spell_input)
+                            spell_tomb[spell_input] = spell_inputs[spell_input]
+                        else:
+                            #spell input is in tomb, replace value
+                            spell_inputs[spell_input] = spell_tomb[spell_input]
+
+                    logging.info("Casting "+spell_type+" "+spell_name)
+                    logging.info(spell_info)
+
+                    #output is equal to spell cast
+                    spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
+
+                logging.info("cast complete")
+
+        except Exception as e:
+            logging.info("Yikes bad error")
+            logging.error(e)
+            sys.exit(-1)   
 
     else:
         print("arg not recognized: \n Valid options are init, ui")

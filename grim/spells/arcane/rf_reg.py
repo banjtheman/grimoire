@@ -69,6 +69,10 @@ def spell(spell_inputs):
     pickle.dump(rf, model_output)
     model_output.close()    
 
+    #should cut off here and make new spell for metrics? or have it return a metrics field to caputre run
+    #model
+    #model save loc
+    #metrics
 
     predictions = rf.predict(test_features)
     print("Predictions:", predictions)

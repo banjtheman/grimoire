@@ -72,43 +72,47 @@ def main(args, loglevel):
 
             #this should be file, we will define csv/api/db in the file
             path_to_file = args.argument[2]
+            if action == "add":
 
-            #the ui will help create this file...
+                #the ui will help create this file...    
 
-            #open file
-            logging.info(path_to_file)
+                #open file
+                logging.info(path_to_file)    
 
-            #open the file
-            with open(path_to_file) as json_file:
-                details = json.load(json_file)
-                logging.info(details)
+                #open the file
+                with open(path_to_file) as json_file:
+                    details = json.load(json_file)
+                    logging.info(details)    
 
-                mana_type = details['type']
-                grim_path = details['grim_path']
-                file_name = details['file_name']
+                    mana_type = details['type']
+                    grim_path = details['grim_path']
+                    file_name = details['file_name']    
 
-                if mana_type == "csv":
-                    logging.info("CSV path")
+                    if mana_type == "csv":
+                        logging.info("CSV path")    
 
-                    #open csv?
-                    #move to grim repo
-                    os.chdir(grim_path)
+                        #open csv?
+                        #move to grim repo
+                        os.chdir(grim_path)    
 
-                    #track csv?
-                    dvc_command ="dvc remote add -d mymana mana"
-                    subprocess.call(dvc_command, shell=True)
+                        #track csv?
+                        dvc_command ="dvc remote add -d mymana mana"
+                        subprocess.call(dvc_command, shell=True)    
 
-                    dvc_command ="dvc add mana/"+file_name
-                    subprocess.call(dvc_command, shell=True)
+                        # ui will place file in mana folder?
+                        # and mana.json for the file
 
-                    git_command = 'git commit .dvc/config -m "Configured mana"'
-                    subprocess.call(git_command, shell=True)
+                        dvc_command ="dvc add mana/"+file_name
+                        subprocess.call(dvc_command, shell=True)    
 
+                        git_command = 'git commit .dvc/config -m "Configured mana"'
+                        subprocess.call(git_command, shell=True)    
+    
 
-                if mana_type == "db":
-                    logging.info("DB path")
-                if mana_type == "api":
-                    logging.info("API path")
+                    if mana_type == "db":
+                        logging.info("DB path")
+                    if mana_type == "api":
+                        logging.info("API path")
         except Exception as e:
             logging.info("Yikes bad error")
             logging.error(e)
@@ -117,6 +121,8 @@ def main(args, loglevel):
 
     elif main_arg == "spell":
         logging.info("spell started")
+        #so this will be fore making new spells now??
+        # will need to rework current mapping
         try:
             spell_type = args.argument[1]
             logging.info("spell_type: " + spell_type)
@@ -156,9 +162,51 @@ def main(args, loglevel):
     elif main_arg == "ui":
         print("ui started")
 
+    elif main_arg == "study":
+        print("study started")
+
+
+    elif main_arg == "invoke":
+        logging.info("invoke started")
+        try:
+            path_to_spells = args.argument[1]
+            logging.info("spells path: " + path_to_spells)
+
+            with open(path_to_spells) as json_file:
+                grim = json.load(json_file)
+                logging.info(grim)
+
+                grim_name = grim["name"]
+                grim_value = grim["value"]
+                grim_pipeline = grim["spells"]
+                grim_path =  grim["grim_path"]    
+                #this will invoke a dvc command to run the cast
+                dvc_command = "dvc run -f grim.dvc -d grim.py -d "+path_to_spells+" -o casts/"+grim_name+"_cast_completed.json python grim.py cast "+path_to_spells
+                subprocess.call(dvc_command, shell=True)
+
+                #think about how we would capture metrics??
+                #we can look at completed file, and make it here
+                #grim study PATH TO COMPLETED JSON... makes metric file  
+
+                #create dvc stuff here?
+                git_command ="git add grim.dvc"
+                subprocess.call(git_command, shell=True)        
+
+                git_command = 'git commit grim.dvc -m "'+grim_name+' pipeline configured"'
+                subprocess.call(git_command, shell=True)        
+
+                dvc_command = 'dvc push'
+                subprocess.call(dvc_command, shell=True)  
+
+        except Exception as e:
+            logging.info("Yikes bad error")
+            logging.error(e)
+            sys.exit(-1)
+
 
     elif main_arg == "cast":
-        print("cast started")
+        logging.info("cast started")
+        #the cast.json is made from UI, place it in the casts folder
 
         try:
             path_to_spells = args.argument[1]
@@ -172,6 +220,7 @@ def main(args, loglevel):
                 grim_name = grim["name"]
                 grim_value = grim["value"]
                 grim_pipeline = grim["spells"]
+                grim_path =  grim["grim_path"]
 
                 #Cast spell
                 logging.info("Running grimorie "+grim_name)
@@ -191,7 +240,7 @@ def main(args, loglevel):
                     for spell_input in spell_inputs.keys():
                         #only add input if not in tomb
                         if spell_input not in spell_tomb:
-                            print("adding thisto spelltomb :"+spell_input)
+                            logging.debug("adding this to spelltomb : "+spell_input)
                             spell_tomb[spell_input] = spell_inputs[spell_input]
                         else:
                             #spell input is in tomb, replace value
@@ -201,9 +250,17 @@ def main(args, loglevel):
                     logging.info(spell_info)
 
                     #output is equal to spell cast
+                    #how do we call dvc here maybe we dont...
                     spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
 
                 logging.info("cast complete")
+                #output spell tomb?
+                print(str(spell_tomb))
+
+                # make grim.ini file
+                write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
+                
+
 
         except Exception as e:
             logging.info("Yikes bad error")

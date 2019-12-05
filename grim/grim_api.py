@@ -11,6 +11,7 @@ import subprocess
 import sys, argparse, logging
 from spells import REGISTERED_SPELLS
 
+from flask import jsonify 
 
 
 #gunicorn --bind 0.0.0.0:9000 --timeout 600 --workers=1 --reload wsgi &
@@ -28,7 +29,11 @@ def write_to_file(filename, content):
 
 @application.route("/health")
 def health():
-    return {"healthy": "true"}
+    jsonResp = {}
+    jsonResp["healthy"] = "true"
+
+
+    return jsonify(jsonResp)
 
 
 

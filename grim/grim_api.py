@@ -41,12 +41,15 @@ def health():
 @application.route("/create_project")
 def create_project():
     logging.info("Init started")
+    jsonResp = {}
+    currentDirectory = os.getcwd()
     try:
         proj_name = request.args.get("project_name")
         logging.info("Project name is: " + proj_name)
 
         #global projects dir
-        os.chdir("/projects")
+        #HARDCODED for now...
+        os.chdir("projects")
 
       # make project dir
         os.mkdir(proj_name)
@@ -64,35 +67,48 @@ def create_project():
 
       # make directories
         os.mkdir("mana")
+        os.mkdir("mana/raw")
         os.mkdir("spells")
         os.mkdir("casts")
 
       # make grim.ini file
-        write_to_file("grim.ini", "hello")
+        write_to_file("grim.ini", "hello") 
+        jsonResp["status"] = "complete"
+
+
+        
 
     except IndexError as e:
         logging.error("Must provide name, example...\n grim init myproj")
+        jsonResp["error"] = "provide name for project"
     except FileExistsError as e:
-        logging.error("Directory " + proj_name + " already exisits")
+        logging.error("Directory " + proj_name + " already exists")
+        jsonResp["error"] = "project name for already exists"
     except Exception as e:
         logging.info("Yikes bad error")
         logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+
+    #hmm dont like this os chdir biz
+    os.chdir(currentDirectory)    
+
+    return jsonify(jsonResp)
 
 
-
+@application.route("/add_mana_source")
 def add_mana_source():
         logging.info("mana add started")
+        currentDirectory = os.getcwd()
         try:
             #this should be file, we will define csv/api/db in the file
-            #path_to_file = request.args.get("project_name")
 
             #the ui will help create this file...
             # ui will just send the file in json form....   
  
-            #open the file
  
             mana_type = request.args.get("mana_type")
-            grim_path = request.args.get("project_path")
+            #HARDCODED for now
+            grim_path = "projects"
             file_name = request.args.get("file_name")    
 
             if mana_type == "csv":
@@ -103,7 +119,7 @@ def add_mana_source():
                 os.chdir(grim_path)    
 
                 #track csv?
-                dvc_command ="dvc remote add -d mymana mana"
+                dvc_command ="dvc remote add -d mymana mana/raw"
                 subprocess.call(dvc_command, shell=True)    
 
                 # ui will place file in mana folder?

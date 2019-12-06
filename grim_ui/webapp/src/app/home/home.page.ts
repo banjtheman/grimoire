@@ -14,6 +14,9 @@ export class HomePage {
   public api_url = "http://localhost:9000"
   public health: any;
 
+  public projectName: any;
+  public mana_type: any;
+
   constructor(private http: HttpClient, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
 
 
@@ -60,7 +63,63 @@ export class HomePage {
     this.http.get(url, { headers: headers }).toPromise()
     .then((data) => { // Success
       console.log(data)
-      this.health = data
+      this.health = data["healthy"]
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.presentModelAlert("Error try again")
+    })
+
+
+
+  }
+
+
+  createProject() {
+    console.log("create project")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/create_project?project_name="+this.projectName
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      console.log(data)
+      //this.health = data["healthy"]
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.presentModelAlert("Error try again")
+    })
+
+
+
+  }
+
+
+  addManaSource() {
+    console.log("add mana source")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/add_mana_source?project_name="+this.projectName
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      console.log(data)
+      //this.health = data["healthy"]
 
     }, (err) => {
       console.log("ok we should back out");

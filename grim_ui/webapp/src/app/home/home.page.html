@@ -12,4 +12,41 @@
     <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
   </div>
   {{health}}
+
+
+  <p></p>
+<br>
+<br>
+<br>
+<div>
+  <h1>Init Project</h1>
+
+  <ion-item>
+    <ion-label>Project Name</ion-label>
+    <ion-input type="text" [(ngModel)]="projectName"></ion-input>
+  </ion-item>
+
+
+  <ion-button shape="round" color="primary" (click)="createProject()">Create Project
+  </ion-button>
+
+</div>
+
+<br>
+<br>
+<br>
+<p></p>
+
+
+<div>
+<h1>Mana source</h1>
+
+
+<ion-select (ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
+<ion-select-option value="csv">csv</ion-select-option>
+<ion-select-option value="db">db</ion-select-option>
+<ion-select-option value="api">api</ion-select-option>
+</ion-select>
+
+</div>
 </ion-content>

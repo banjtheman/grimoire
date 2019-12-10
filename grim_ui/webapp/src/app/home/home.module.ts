@@ -6,11 +6,16 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 
+import { FileUploadModule } from 'ng2-file-upload';
+
+
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    FileUploadModule,
     RouterModule.forChild([
       {
         path: '',

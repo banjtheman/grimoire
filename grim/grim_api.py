@@ -95,41 +95,48 @@ def create_project():
     return jsonify(jsonResp)
 
 
-@application.route("/add_mana_source")
-def add_mana_source():
+def add_mana_source(mana_object):
         logging.info("mana add started")
+        jsonResp = {}
         currentDirectory = os.getcwd()
         try:
             #this should be file, we will define csv/api/db in the file
 
             #the ui will help create this file...
-            # ui will just send the file in json form....   
- 
- 
-            mana_type = request.args.get("mana_type")
+            # ui will just send the file in json form....
+            mana_type = mana_object["mana_type"]
             #HARDCODED for now
-            grim_path = "projects"
-            file_name = request.args.get("file_name")    
+            grim_path = "projects/"+mana_object["project_name"]
+              
 
             if mana_type == "csv":
+                file_name = mana_object["file_name"]  
                 logging.info("CSV path")    
 
-                        #open csv?
-                        #move to grim repo
+                #open csv?
+                #move to grim repo
                 os.chdir(grim_path)    
 
-                #track csv?
+                #track csv? might only have to do this once..?
                 dvc_command ="dvc remote add -d mymana mana/raw"
                 subprocess.call(dvc_command, shell=True)    
 
                 # ui will place file in mana folder?
                 # and mana.json for the file
 
+                #write out the file here
+                logging.info("Writing to file: mana/" + file_name)
+                write_to_file("mana/" + file_name,mana_object["content"])
+
                 dvc_command ="dvc add mana/"+file_name
                 subprocess.call(dvc_command, shell=True)    
 
                 git_command = 'git commit .dvc/config -m "Configured mana"'
-                subprocess.call(git_command, shell=True)    
+                subprocess.call(git_command, shell=True)
+
+                jsonResp["status"] = "complete" 
+
+                return jsonResp
     
             if mana_type == "db":
                logging.info("DB path")
@@ -139,7 +146,73 @@ def add_mana_source():
         except Exception as e:
             logging.info("Yikes bad error")
             logging.error(e)
-            sys.exit(-1)
+            jsonResp["error"] = "Segfault..."+str(e)
+            return jsonResp
+
+
+
+def parse_form_data(data):
+    """
+    Purpose:
+        Get parse raw csv data
+    Args/Requests:
+         data = RAW POST data from UI
+    Return:
+        json object the name of csv fike, and the content of the csv
+    """
+    string_data = data.decode("utf-8")
+    csv_data = string_data.split("Content-Type: text/csv")
+    file_name = csv_data[0].split("filename=")[1].strip().replace('"', "")
+    parsed_data = csv_data[1].split("\r\n\r\n------WebKitFormBoundary")[0].strip()
+
+    parsed_data = parsed_data.rsplit("\n", 2)[0]
+
+    csv_info = {}
+    csv_info["file_name"] = file_name
+    csv_info["content"] = parsed_data
+    csv_info["mana_type"] = "csv"
+    return csv_info
+
+
+@application.route("/add_csv_mana_source", methods=["GET", "POST"])
+def add_csv_mana_source():
+    """
+    Purpose:
+        Proccess RAW csv data
+    Args/Requests:
+         data = raw csv data uploaded 
+    Return:
+        json object with name of csv file processed
+    """
+    data = request.data
+    print("File data is...")
+    print(data)
+
+    proj_name = request.args.get("project_name")
+    logging.info("Project name is: " + proj_name)
+
+    csv_data = parse_form_data(data)
+    #call mana function here...
+
+    print("Parsed CSV is...")
+    csv_data["project_name"] = proj_name
+    print(csv_data)
+
+    jsonResp = add_mana_source(csv_data)
+
+
+
+    # print("Writing to file: " + csv_data["file_name"])
+
+    # f = open("/tmp/" + randInt + "/" + csv_data["file_name"], "w")
+    # f.write(csv_data["content"])
+    # f.close()
+    return jsonify(jsonResp)
+
+
+
 
 if __name__ == "__main__":
+    loglevel = logging.INFO
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)
     application.run(host="0.0.0.0", port="9000")

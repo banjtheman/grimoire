@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Ionic Blank
+      Grimoire
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -38,15 +38,65 @@
 <p></p>
 
 
-<div>
-<h1>Mana source</h1>
+
+  <ion-grid>
+      <h1>Mana source</h1>
+    <ion-row>
+      <ion-col size=3>
+
+          <ion-item>
+              <ion-label>Mana type</ion-label>
+              
+              <ion-select [(ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
+              <ion-select-option value="csv">csv</ion-select-option>
+              <ion-select-option value="db">db</ion-select-option>
+              <ion-select-option value="api">api</ion-select-option>
+              </ion-select>
+              </ion-item>
+              
+              
 
 
-<ion-select (ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
-<ion-select-option value="csv">csv</ion-select-option>
-<ion-select-option value="db">db</ion-select-option>
-<ion-select-option value="api">api</ion-select-option>
-</ion-select>
 
-</div>
+            </ion-col>
+
+    </ion-row>
+    <ion-row>
+      <ion-col size=3 *ngIf="mana_type == 'csv';">
+
+       <ion-list>
+          <ion-item>
+              <ion-label>File Upload</ion-label>
+              <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
+              </ion-input> -->
+              <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
+        
+            </ion-item>
+
+
+            <ion-item>
+
+            <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
+                <b>Upload CSV</b>
+              </ion-button>
+            </ion-item>
+            
+          </ion-list>
+
+
+
+
+      </ion-col>
+
+
+
+
+
+
+    </ion-row>
+  </ion-grid>
+
+
+
+
 </ion-content>

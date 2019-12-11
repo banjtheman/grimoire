@@ -27,6 +27,9 @@ export class HomePage {
   public hasBaseDropZoneOver: boolean = false;
   public hasAnotherDropZoneOver: boolean = false;
 
+  public mana: any;
+  public pipeline: any;
+
   constructor(private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
 
 
@@ -190,6 +193,7 @@ export class HomePage {
     this.http.post(url, formData, { headers: headers }).toPromise()
       .then((data) => { // Success
         console.log(data)
+        this.mana = data
         // this.file_name = data["file_name"]
 
         // this.modalController.dismiss({
@@ -211,6 +215,10 @@ export class HomePage {
       this.uploader.queue[0].remove()
     }
     
+  }
+
+  set_pipeline(val){
+    this.pipeline = val
   }
 
 

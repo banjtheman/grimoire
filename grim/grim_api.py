@@ -134,7 +134,16 @@ def add_mana_source(mana_object):
                 git_command = 'git commit .dvc/config -m "Configured mana"'
                 subprocess.call(git_command, shell=True)
 
+                #now get data
+                df = pd.read_csv("mana/"+file_name)
+
+
                 jsonResp["status"] = "complete" 
+                jsonResp["data"] = df.to_json()
+                jsonResp["cols"] = list(df.columns)
+
+
+                os.chdir(currentDirectory) 
 
                 return jsonResp
     
@@ -147,6 +156,7 @@ def add_mana_source(mana_object):
             logging.info("Yikes bad error")
             logging.error(e)
             jsonResp["error"] = "Segfault..."+str(e)
+            os.chdir(currentDirectory)
             return jsonResp
 
 

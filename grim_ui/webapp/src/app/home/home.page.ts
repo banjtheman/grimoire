@@ -29,12 +29,14 @@ export class HomePage {
 
   public mana: any;
   public pipeline: any;
+  public grims: any;
 
   constructor(private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
 
 
 
     this.healthCheck()
+    this.get_grims()
 
   }
 
@@ -77,6 +79,36 @@ export class HomePage {
     .then((data) => { // Success
       console.log(data)
       this.health = data["healthy"]
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.presentModelAlert("Error try again")
+    })
+
+
+
+  }
+
+
+
+  get_grims() {
+    console.log("getting grims")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/get_grims"
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      
+      this.grims = data["grims"]
+      console.log(this.grims)
 
     }, (err) => {
       console.log("ok we should back out");

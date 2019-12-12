@@ -222,6 +222,42 @@ def add_csv_mana_source():
 
 
 
+@application.route("/get_grims")
+def get_grims():
+    """
+    Purpose:
+        Get grimoire json files
+    Args/Requests:
+         N/A
+    Return:
+        array of grim objects
+    """	
+
+    grim_array = []
+    jsonResp = {}
+    #local grim file
+    for file in os.listdir("grimoire"):
+        if file.endswith(".json"):
+            try:
+                logging.info(os.path.join("grimoire", file))
+                with open(os.path.join("grimoire", file)) as json_file:
+                    grim = json.load(json_file)
+                    logging.info(grim)
+                    grim_array.append(grim)
+
+            except Exception as e:
+                logging.info("Yikes bad error")
+                logging.error(e)
+                jsonResp["error"] = "Segfault..."+str(e)
+                return jsonResp
+    #return array
+    
+    jsonResp["grims"] = grim_array
+
+    return jsonify(jsonResp)
+
+
+
 if __name__ == "__main__":
     loglevel = logging.INFO
     logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)

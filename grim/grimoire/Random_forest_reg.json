@@ -1,0 +1,20 @@
+{"name" : "simple_reg",
+ "value": "find correlation with values given target",
+"spells" : [
+{
+	"spell_type" : "holy",
+	"spell_name": "heal",
+	"spell_info" : "converts raw data to mana",
+	"spell_inputs" :   {"mana_location" : "test.csv",
+	            "target_string" : "value" },            
+	"spell_output": "healed_data"
+}, 
+{
+	"spell_type" : "arcane",
+	"spell_name": "rf_reg",
+	"spell_info" : "creates rf model from mana",
+	"spell_inputs" : {"healed_data" : "healed_data"},
+	"spell_output": "model"
+}
+]
+}

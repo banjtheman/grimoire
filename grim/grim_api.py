@@ -141,6 +141,7 @@ def add_mana_source(mana_object):
                 jsonResp["status"] = "complete" 
                 jsonResp["data"] = df.to_json()
                 jsonResp["cols"] = list(df.columns)
+                jsonResp["file_name"] = file_name
 
 
                 os.chdir(currentDirectory) 

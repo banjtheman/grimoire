@@ -135,9 +135,41 @@
                       <ion-card-content *ngIf="s == 0">
                       Spell inputs:
                       <ion-list>
-                        <ion-item *ngFor="let spell_input of spell['spell_inputs']">
+                        <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
                             <ion-label>
-                                <h2>{{spell_input}}</h2>
+                                <h2>{{sim["input_name"]}}</h2>
+                                <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
+                                <!-- We will want to make this a component and just add to that? --->
+
+                                <!-- If mana -->
+                                <div *ngIf="sim['takesMana']">
+
+                                  <!-- We want a drop down for all mana sources by type?-->
+
+
+
+
+
+                                </div>
+
+                                <!-- If takes csv cols -->
+                                <div *ngIf="sim['takesCSVCol']">
+
+                                  <!-- We want a drop down for all mana sources by type?-->
+
+
+
+
+
+                                </div>
+                                
+
+
+
+
+
+
+
                               </ion-label>
 
                         </ion-item>

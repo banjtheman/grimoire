@@ -4,7 +4,12 @@
 {
 	"spell_type" : "holy",
 	"spell_name": "heal",
+	"has_user_spell_inputs" : true,
 	"spell_info" : "converts raw data to mana",
+	"spell_inputs_metadata" :  [ 
+	{"takesMana": true, "input_name": "mana_location", "takesCSV" : true,  "takesAPI" : false,  "takesDB" : false, "takesCSVCol": false, "info": "CSV path" },
+	{"takesMana": false, "input_name": "target_string", "takesCSV" : false,  "takesAPI" : false,  "takesDB" : false, "takesCSVCol": true, "info": "Target Column" }
+	] ,
 	"spell_inputs" :   {"mana_location" : "test.csv",
 	            "target_string" : "value" },            
 	"spell_output": "healed_data"
@@ -12,6 +17,7 @@
 {
 	"spell_type" : "arcane",
 	"spell_name": "rf_reg",
+	"has_user_spell_inputs" : false,
 	"spell_info" : "creates rf model from mana",
 	"spell_inputs" : {"healed_data" : "healed_data"},
 	"spell_output": "model"

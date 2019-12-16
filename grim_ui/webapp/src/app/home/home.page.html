@@ -132,30 +132,51 @@
                       </ion-card-header>
 
                      <!-- will need to work out how we want to accept inputs-->
-                      <ion-card-content *ngIf="s == 0">
+                      <ion-card-content *ngIf="s == 0" text-center>
                       Spell inputs:
                       <ion-list>
                         <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
                             <ion-label>
-                                <h2>{{sim["input_name"]}}</h2>
+                                <!-- <h2>{{sim["input_name"]}}</h2> -->
                                 <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
                                 <!-- We will want to make this a component and just add to that? --->
 
                                 <!-- If mana -->
                                 <div *ngIf="sim['takesMana']">
+                                  <h2>Mana source</h2>
+                                  {{sim["input_name"]}} - {{sim["info"]}}
 
                                   <!-- We want a drop down for all mana sources by type?-->
+                                  <div *ngIf="sim['takesCSV']">
 
 
+                                      <ion-label>CSV Name</ion-label>
+                                      <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
 
 
+                                  </div>
+
+                                  <div *ngIf="sim['takesDB']">
+
+
+                                  </div>
+
+
+                                  <div *ngIf="sim['takesAPI']">
+
+
+                                  </div>
 
                                 </div>
 
                                 <!-- If takes csv cols -->
                                 <div *ngIf="sim['takesCSVCol']">
 
+                                  {{sim["input_name"]}} - {{sim["info"]}}         
+
                                   <!-- We want a drop down for all mana sources by type?-->
+                                  <ion-label>Column Input</ion-label>
+                                  <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
 
 
 
@@ -183,9 +204,8 @@
             </ion-list>
 
 
-
-            <ion-button shape="round" (click)="set_pipeline('rf');">Set as
-              Identifier</ion-button>
+                    
+            <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
           </ion-card-content>
         </ion-card>
 

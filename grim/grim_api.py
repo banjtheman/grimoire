@@ -158,7 +158,7 @@ def add_mana_source(mana_object):
             logging.error(e)
             jsonResp["error"] = "Segfault..."+str(e)
             os.chdir(currentDirectory)
-            return jsonResp
+            return jsonify(jsonResp)
 
 
 
@@ -218,6 +218,101 @@ def add_csv_mana_source():
     # f = open("/tmp/" + randInt + "/" + csv_data["file_name"], "w")
     # f.write(csv_data["content"])
     # f.close()
+    return jsonify(jsonResp)
+
+
+
+@application.route("/cast_grim", methods=["GET", "POST"])
+def cast_grim():
+    """
+    Purpose:
+        Cast spells
+    Args/Requests:
+         data = metadata needed to cast spell 
+    Return:
+        json object with result of cast
+    """
+
+    currentDirectory = os.getcwd()
+    #HARDCODE projects dir
+
+
+
+    data = request.data
+    print("File data is...")
+    print(data)
+
+    proj_name = request.args.get("project_name")
+    print("Project name is: " + proj_name)
+
+    grim_path = "projects/"+proj_name
+
+
+
+    #Run the dvc invoke path?
+    grim = json.loads(data.decode('utf-8'))
+    print(grim["name"])
+
+    cast_path = grim_path+"/casts/"+grim["name"]+".json"
+
+    #write the json to cast path
+    with open(cast_path, 'w') as outfile:
+        json.dump(grim, outfile)
+
+    #cd to project
+
+    #run dvc command
+
+    #issue is here... we would have to copy spells to project? or have cli tool?
+
+    #TODO: we dont want to have to copy spells to each project
+    #one way is to just cp spells to the project
+
+
+    try:
+    	#HARDCODE TODO: refactor once we have grim cli tool
+        #copy spells to grim path 
+        copy_command = "cp -r spells "+grim_path+"/spells/"
+        subprocess.call(copy_command, shell=True)
+
+        copy_command = "cp grim.py "+grim_path+"/"
+        subprocess.call(copy_command, shell=True)
+
+        #change dir
+        os.chdir(grim_path)
+        local_casts_path = "casts/"+grim["name"]+".json"
+
+        dvc_command = "dvc run -f grim.dvc -d grim.py -d "+local_casts_path+" -o casts/"+grim["name"]+"_cast_completed.json python grim.py cast "+local_casts_path
+        subprocess.call(dvc_command, shell=True)
+
+        #think about how we would capture metrics??
+        #we can look at completed file, and make it here
+        #grim study PATH TO COMPLETED JSON... makes metric file  
+
+        #create dvc stuff here?
+        git_command ="git add grim.dvc"
+        subprocess.call(git_command, shell=True)        
+
+        git_command = 'git commit grim.dvc -m "'+grim["name"]+' pipeline configured"'
+        subprocess.call(git_command, shell=True)        
+
+        dvc_command = 'dvc push'
+        subprocess.call(dvc_command, shell=True)
+
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+        os.chdir(currentDirectory)
+        return jsonify(jsonResp)    
+
+
+
+
+    jsonResp = {}
+    jsonResp["status"] = "got it"
+    os.chdir(currentDirectory)
+
     return jsonify(jsonResp)
 
 

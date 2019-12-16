@@ -31,6 +31,12 @@ export class HomePage {
   public pipeline: any;
   public grims: any;
 
+
+  //pipeline vars
+  public spell_tomb = {}
+
+
+
   constructor(private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
 
 
@@ -251,6 +257,56 @@ export class HomePage {
 
   set_pipeline(val){
     this.pipeline = val
+  }
+
+  cast_grim(grimID){
+    console.log("Going to cast grimID: "+grimID)
+    console.dir(this.grims[grimID])
+    console.log("Got this spell tomb")
+    console.dir(this.spell_tomb)
+
+    //We want to update grim with the new spell tomb
+    let spells = this.grims[grimID]
+
+    //update the first spell inputs with new data
+    spells["spells"][0]["spell_inputs"] = this.spell_tomb
+
+
+    console.log("Here is updated spell tomb")
+    console.dir(spells)
+
+    //Send post request with spells to backend
+        // POST formData to Server
+        let headers = new HttpHeaders({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        });
+    
+    
+    
+        var url = this.api_url + "/cast_grim?project_name="+this.projectName
+        console.log("calling this url: " + url);
+    
+        this.http.post(url, spells, { headers: headers }).toPromise()
+          .then((data) => { // Success
+            console.log(data)
+            this.mana = data
+            // this.file_name = data["file_name"]
+    
+            // this.modalController.dismiss({
+            //   'file_upload': this.file_upload,
+            //   'file_name': this.file_name,
+            // });
+    
+          }, (err) => {
+            console.log("ok we should back out");
+            console.log(err);
+          })
+
+
+
+
+    
   }
 
 

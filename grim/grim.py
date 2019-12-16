@@ -82,7 +82,7 @@ def main(args, loglevel):
                 #open the file
                 with open(path_to_file) as json_file:
                     details = json.load(json_file)
-                    logging.info(details)    
+                    logging.info(details) 
 
                     mana_type = details['type']
                     grim_path = details['grim_path']
@@ -178,8 +178,8 @@ def main(args, loglevel):
 
                 grim_name = grim["name"]
                 grim_value = grim["value"]
-                grim_pipeline = grim["spells"]
-                grim_path =  grim["grim_path"]    
+                #grim_pipeline = grim["spells"]
+                #grim_path =  grim["grim_path"]
                 #this will invoke a dvc command to run the cast
                 dvc_command = "dvc run -f grim.dvc -d grim.py -d "+path_to_spells+" -o casts/"+grim_name+"_cast_completed.json python grim.py cast "+path_to_spells
                 subprocess.call(dvc_command, shell=True)
@@ -220,7 +220,7 @@ def main(args, loglevel):
                 grim_name = grim["name"]
                 grim_value = grim["value"]
                 grim_pipeline = grim["spells"]
-                grim_path =  grim["grim_path"]
+                #grim_path =  grim["grim_path"]
 
                 #Cast spell
                 logging.info("Running grimorie "+grim_name)

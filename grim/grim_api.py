@@ -11,7 +11,8 @@ import subprocess
 import sys, argparse, logging
 from spells import REGISTERED_SPELLS
 
-from flask import jsonify 
+from flask import jsonify
+import grim
 
 
 #gunicorn --bind 0.0.0.0:9000 --timeout 600 --workers=1 --reload wsgi &
@@ -234,6 +235,7 @@ def cast_grim():
     """
 
     currentDirectory = os.getcwd()
+    jsonResp = {}
     #HARDCODE projects dir
 
 
@@ -250,19 +252,17 @@ def cast_grim():
 
 
     #Run the dvc invoke path?
-    grim = json.loads(data.decode('utf-8'))
-    print(grim["name"])
+    grimoire = json.loads(data.decode('utf-8'))
+    print(grimoire["name"])
 
-    cast_path = grim_path+"/casts/"+grim["name"]+".json"
+    cast_path = grim_path+"/casts/"+grimoire["name"]+".json"
 
     #write the json to cast path
     with open(cast_path, 'w') as outfile:
-        json.dump(grim, outfile)
+        json.dump(grimoire, outfile)
 
     #cd to project
-
     #run dvc command
-
     #issue is here... we would have to copy spells to project? or have cli tool?
 
     #TODO: we dont want to have to copy spells to each project
@@ -272,18 +272,22 @@ def cast_grim():
     try:
     	#HARDCODE TODO: refactor once we have grim cli tool
         #copy spells to grim path 
-        copy_command = "cp -r spells "+grim_path+"/spells/"
-        subprocess.call(copy_command, shell=True)
+        #copy_command = "cp -r spells "+grim_path+"/spells/"
+        #subprocess.call(copy_command, shell=True)
 
-        copy_command = "cp grim.py "+grim_path+"/"
-        subprocess.call(copy_command, shell=True)
+        #copy_command = "cp grim.py "+grim_path+"/"
+        #subprocess.call(copy_command, shell=True)
 
         #change dir
         os.chdir(grim_path)
-        local_casts_path = "casts/"+grim["name"]+".json"
+        local_casts_path = "casts/"+grimoire["name"]+".json"
 
-        dvc_command = "dvc run -f grim.dvc -d grim.py -d "+local_casts_path+" -o casts/"+grim["name"]+"_cast_completed.json python grim.py cast "+local_casts_path
-        subprocess.call(dvc_command, shell=True)
+        #do we even want to use dvc???? look at metaflow?
+        #idea is to make a metaflow file and run that?
+
+        #dvc_command = "dvc run -f grim.dvc -d grim.py -d "+local_casts_path+" -o casts/"+grim["name"]+"_cast_completed.json python grim.py cast "+local_casts_path
+        #subprocess.call(dvc_command, shell=True)
+        grim.cast(local_casts_path)
 
         #think about how we would capture metrics??
         #we can look at completed file, and make it here
@@ -293,7 +297,7 @@ def cast_grim():
         git_command ="git add grim.dvc"
         subprocess.call(git_command, shell=True)        
 
-        git_command = 'git commit grim.dvc -m "'+grim["name"]+' pipeline configured"'
+        git_command = 'git commit grim.dvc -m "'+grimoire["name"]+' pipeline configured"'
         subprocess.call(git_command, shell=True)        
 
         dvc_command = 'dvc push'
@@ -309,7 +313,7 @@ def cast_grim():
 
 
 
-    jsonResp = {}
+    
     jsonResp["status"] = "got it"
     os.chdir(currentDirectory)
 

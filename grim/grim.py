@@ -59,11 +59,13 @@ def init(project_name):
 
 
 def cast(cast_path):
+    loglevel = logging.INFO
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)    
     logging.info("cast started")
     #the cast.json is made from UI, place it in the casts folder
 
     try:
-        path_to_spells = args.argument[1]
+        path_to_spells = cast_path
         logging.info("spells path: " + path_to_spells)
 
 
@@ -112,7 +114,7 @@ def cast(cast_path):
             print(str(spell_tomb))
             # make grim.ini file
             write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
-            
+
     except Exception as e:
         logging.info("Yikes bad error")
         logging.error(e)

@@ -71,6 +71,7 @@ def spell(spell_inputs):
 
     #should cut off here and make new spell for metrics? or have it return a metrics field to caputre run
     #model
+    #timestamp
     #model save loc
     #metrics
 

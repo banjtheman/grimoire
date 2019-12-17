@@ -3,7 +3,7 @@ test/
 test.json
 test.csv
 *.pkl
-
+projects/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

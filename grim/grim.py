@@ -14,6 +14,112 @@ def write_to_file(filename, content):
     f.close()
 
 
+def init(project_name):
+    loglevel = logging.INFO
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)
+    logging.info("Init started")
+    try:
+        
+        logging.info("Project name is: " + project_name)
+
+        # make project dir
+        os.mkdir(project_name)
+
+        # change to new dir
+        os.chdir(project_name)
+
+        # init git
+        cmd = "git init"
+        subprocess.call(cmd, shell=True)
+
+        # init dvc
+        cmd = "dvc init"
+        subprocess.call(cmd, shell=True)
+
+        # make directories
+        os.mkdir("mana")
+        os.mkdir("spells")
+        os.mkdir("casts")
+
+        # make grim.ini file
+        write_to_file("grim.ini", "hello")
+
+    except IndexError as e:
+        logging.error("Must provide name, example...\n grim init myproj")
+        sys.exit(-1)
+    except FileExistsError as e:
+        logging.error("Directory " + proj_name + " already exisits")
+        sys.exit(-1)
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        sys.exit(-1)
+
+
+
+
+def cast(cast_path):
+    logging.info("cast started")
+    #the cast.json is made from UI, place it in the casts folder
+
+    try:
+        path_to_spells = args.argument[1]
+        logging.info("spells path: " + path_to_spells)
+
+
+        with open(path_to_spells) as json_file:
+            grim = json.load(json_file)
+            logging.info(grim)
+
+            grim_name = grim["name"]
+            grim_value = grim["value"]
+            grim_pipeline = grim["spells"]
+            #grim_path =  grim["grim_path"]
+
+            #Cast spell
+            logging.info("Running grimorie "+grim_name)
+            logging.info("This grimorie is good because... "+grim_value)
+
+            spell_tomb = {}
+
+            for spell in grim_pipeline:
+                logging.debug(spell)
+                #run first spell?
+                spell_type = spell["spell_type"]
+                spell_name = spell["spell_name"]
+                spell_info = spell["spell_info"]
+                spell_inputs = spell["spell_inputs"]
+                spell_output = spell["spell_output"]
+
+                for spell_input in spell_inputs.keys():
+                    #only add input if not in tomb
+                    if spell_input not in spell_tomb:
+                        logging.debug("adding this to spelltomb : "+spell_input)
+                        spell_tomb[spell_input] = spell_inputs[spell_input]
+                    else:
+                        #spell input is in tomb, replace value
+                        spell_inputs[spell_input] = spell_tomb[spell_input]
+
+                    logging.info("Casting "+spell_type+" "+spell_name)
+                    logging.info(spell_info)
+
+                    #output is equal to spell cast
+                    #how do we call dvc here maybe we dont...
+                    spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
+
+            logging.info("cast complete")
+            #output spell tomb?
+            print(str(spell_tomb))
+            # make grim.ini file
+            write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
+            
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        sys.exit(-1)
+
+
+
 def main(args, loglevel):
     logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)
 
@@ -177,7 +283,7 @@ def main(args, loglevel):
                 logging.info(grim)
 
                 grim_name = grim["name"]
-                grim_value = grim["value"]
+                #grim_value = grim["value"]
                 #grim_pipeline = grim["spells"]
                 #grim_path =  grim["grim_path"]
                 #this will invoke a dvc command to run the cast

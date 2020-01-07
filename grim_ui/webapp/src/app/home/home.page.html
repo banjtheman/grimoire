@@ -7,229 +7,74 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be
-      your guide.</p>
-  </div>
-  {{health}}
 
-
-  <p></p>
-  <br>
-  <br>
-  <br>
-  <div>
-    <h1>Init Project</h1>
-
-    <ion-item>
-      <ion-label>Project Name</ion-label>
-      <ion-input type="text" [(ngModel)]="projectName"></ion-input>
-    </ion-item>
-
-
-    <ion-button shape="round" color="primary" (click)="createProject()">Create Project
-    </ion-button>
-
-  </div>
-
-  <br>
-  <br>
-  <br>
-  <p></p>
-
-
-
-  <ion-grid>
-    <h1>Mana source</h1>
-    <ion-row>
-      <ion-col size=3>
-
-        <ion-item>
-          <ion-label>Mana type</ion-label>
-
-          <ion-select [(ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
-            <ion-select-option value="csv">csv</ion-select-option>
-            <ion-select-option value="db">db</ion-select-option>
-            <ion-select-option value="api">api</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-
-
-
-
-      </ion-col>
-
-    </ion-row>
-    <ion-row>
-      <ion-col size=3 *ngIf="mana_type == 'csv';">
-
-        <ion-list>
-          <ion-item>
-            <ion-label>File Upload</ion-label>
-            <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
-              </ion-input> -->
-            <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
-
-          </ion-item>
-
-
-          <ion-item>
-
-            <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
-              <b>Upload CSV</b>
+    <ion-grid>
+        <ion-row>
+          <ion-col size-xs="auto" offset-xs="1" offset-lg="3" size-lg="3">
+            <h1>Projects</h1>
+          </ion-col>
+          <ion-col padding-top size-xs="auto" offset-xs="2" offset-lg="2" size-lg="2">
+            <ion-button shape="round" color="primary" (click)="newProject()">
+              <ion-icon slot="start" name="add"></ion-icon>
+              <b>New Project</b>
             </ion-button>
-          </ion-item>
-
-        </ion-list>
-
-
+          </ion-col>
+        </ion-row>
+    </ion-grid>
 
 
-      </ion-col>
+    <ion-list>
+        <ion-grid>
+          <ion-row>
+  
+            <ion-col col-md-4 class="project-content" size-sm="12" size-md="4" text-center *ngFor="let project of projects">
+              <ion-card>
+                <!-- <ion-card-header color="dark">
+                  <ion-card-title>
+                    <b>{{job.payload.val()["details"]["title"]}}</b>
+                  </ion-card-title>
+                  <ion-card-subtitle>{{job.payload.val()["details"]["url"]}}</ion-card-subtitle>
+                </ion-card-header> -->
+  
+                <ion-card-content>
+  
+                  <h2>
+                    <b>{{project["name"]}}</b>
+                  </h2>
+
+                  <p>Created by placeholder - {{project["createdAt"]}}</p>
+  
+                  <p>
+                    {{project["desc"]}}
+                  </p>
+                  <ion-row>
+                    <ion-col>
+                      <div class="tooltip">
+                        <ion-button shape="round" color="primary" (click)="viewInterviews(job)">
+                          <ion-icon slot="start" name="eye"></ion-icon>
+                          <b>Spells</b>
+                        </ion-button>
+                        <span class="tooltiptext">Conjure Spells</span>
+                      </div>
+  
+                    </ion-col>
+                    <ion-col>
+                      <div class="tooltip">
+                        <ion-button shape="round" color="medium" (click)="deleteJobAlertConfirm(job)">
+                          <ion-icon name="trash"></ion-icon>
+                        </ion-button>
+                        <span class="tooltiptext">Delete Project</span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
 
 
-
-
-
-
-    </ion-row>
-  </ion-grid>
-
-  <!-- *ngIf="mana != null -->
-  <ion-grid>
-
-    <h1>Grimoires</h1>
-
-    <ion-row>
-      <ion-col *ngFor="let grim of grims;let i = index" size=3>
-
-
-        <ion-card>
-          <ion-card-header text-center>
-            <ion-card-title>
-                {{grim["name"]}}
-            </ion-card-title>
-            <ion-card-subtitle>
-                {{grim["value"]}}
-            </ion-card-subtitle>
-            
-          </ion-card-header>
-
-          <ion-card-content>
-
-            <ion-list>
-              <ion-item *ngFor="let spell of grim['spells'];let s = index">
-                  <ion-card>
-                    <ion-card-header>
-                        <ion-card-title>
-                            {{spell["spell_type"]}} - {{spell["spell_name"]}}
-                        </ion-card-title>
-                        <ion-card-subtitle>
-                            {{spell["spell_info"]}}
-                        </ion-card-subtitle>
-                      </ion-card-header>
-
-                     <!-- will need to work out how we want to accept inputs-->
-                      <ion-card-content *ngIf="s == 0" text-center>
-                      Spell inputs:
-                      <ion-list>
-                        <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
-                            <ion-label>
-                                <!-- <h2>{{sim["input_name"]}}</h2> -->
-                                <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
-                                <!-- We will want to make this a component and just add to that? --->
-
-                                <!-- If mana -->
-                                <div *ngIf="sim['takesMana']">
-                                  <h2>Mana source</h2>
-                                  {{sim["input_name"]}} - {{sim["info"]}}
-
-                                  <!-- We want a drop down for all mana sources by type?-->
-                                  <div *ngIf="sim['takesCSV']">
-
-
-                                      <ion-label>CSV Name</ion-label>
-                                      <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
-
-
-                                  </div>
-
-                                  <div *ngIf="sim['takesDB']">
-
-
-                                  </div>
-
-
-                                  <div *ngIf="sim['takesAPI']">
-
-
-                                  </div>
-
-                                </div>
-
-                                <!-- If takes csv cols -->
-                                <div *ngIf="sim['takesCSVCol']">
-
-                                  {{sim["input_name"]}} - {{sim["info"]}}         
-
-                                  <!-- We want a drop down for all mana sources by type?-->
-                                  <ion-label>Column Input</ion-label>
-                                  <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
-
-
-
-
-
-                                </div>
-                                
-
-
-
-
-
-
-
-                              </ion-label>
-
-                        </ion-item>
-
-                      </ion-list>
-                      </ion-card-content>
-                      </ion-card>
-
-              </ion-item>
-
-            </ion-list>
-
-
-                    
-            <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
-          </ion-card-content>
-        </ion-card>
-
-      </ion-col>
-
-    </ion-row>
-
-    <ion-row>
-
-      <ion-col offset=3 size=3>
-        <ion-list>
-          <ion-item>
-            Pipeline: {{pipeline}}
-          </ion-item>
-
-          <!-- <ion-item>
-            Mana columns
-            {{mana["cols"]}}
-          </ion-item> -->
-        </ion-list>
-
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 
 
 

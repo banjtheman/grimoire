@@ -1,0 +1,35 @@
+
+<ion-header>
+    <ion-toolbar color="warning"> 
+      <ion-buttons slot="end" >
+        <ion-button size="large" (click)="dismiss()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title text-center>
+        <b>New Project</b>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content padding>
+  
+    <ion-list inset>
+      <ion-item>
+        <ion-input type="text" placeholder="Name" [(ngModel)]="name"></ion-input>
+      </ion-item>
+  
+      <ion-item>
+        <ion-input type="text" placeholder="Description" [(ngModel)]="desc"></ion-input>
+      </ion-item>
+
+  
+  
+    </ion-list>
+  
+  
+    <br>
+    <ion-button expand="full" shape="round" color="primary" (click)="createProjectAction()">
+      <b>Create Project</b>
+    </ion-button>
+  </ion-content>

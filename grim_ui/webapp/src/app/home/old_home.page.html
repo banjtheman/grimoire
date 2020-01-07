@@ -1,0 +1,231 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Grimoire
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+  
+  
+    <p></p>
+    <br>
+    <br>
+    <br>
+    <div>
+      <h1>Init Project</h1>
+  
+      <ion-item>
+        <ion-label>Project Name</ion-label>
+        <ion-input type="text" [(ngModel)]="projectName"></ion-input>
+      </ion-item>
+  
+  
+      <ion-button shape="round" color="primary" (click)="createProject()">Create Project
+      </ion-button>
+  
+    </div>
+  
+    <br>
+    <br>
+    <br>
+    <p></p>
+  
+  
+  
+    <ion-grid>
+      <h1>Mana source</h1>
+      <ion-row>
+        <ion-col size=3>
+  
+          <ion-item>
+            <ion-label>Mana type</ion-label>
+  
+            <ion-select [(ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
+              <ion-select-option value="csv">csv</ion-select-option>
+              <ion-select-option value="db">db</ion-select-option>
+              <ion-select-option value="api">api</ion-select-option>
+            </ion-select>
+          </ion-item>
+  
+  
+  
+  
+  
+        </ion-col>
+  
+      </ion-row>
+      <ion-row>
+        <ion-col size=3 *ngIf="mana_type == 'csv';">
+  
+          <ion-list>
+            <ion-item>
+              <ion-label>File Upload</ion-label>
+              <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
+                </ion-input> -->
+              <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
+  
+            </ion-item>
+  
+  
+            <ion-item>
+  
+              <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
+                <b>Upload CSV</b>
+              </ion-button>
+            </ion-item>
+  
+          </ion-list>
+  
+  
+  
+  
+        </ion-col>
+  
+  
+  
+  
+  
+  
+      </ion-row>
+    </ion-grid>
+  
+    <!-- *ngIf="mana != null -->
+    <ion-grid>
+  
+      <h1>Grimoires</h1>
+  
+      <ion-row>
+        <ion-col *ngFor="let grim of grims;let i = index" size=3>
+  
+  
+          <ion-card>
+            <ion-card-header text-center>
+              <ion-card-title>
+                  {{grim["name"]}}
+              </ion-card-title>
+              <ion-card-subtitle>
+                  {{grim["value"]}}
+              </ion-card-subtitle>
+              
+            </ion-card-header>
+  
+            <ion-card-content>
+  
+              <ion-list>
+                <ion-item *ngFor="let spell of grim['spells'];let s = index">
+                    <ion-card>
+                      <ion-card-header>
+                          <ion-card-title>
+                              {{spell["spell_type"]}} - {{spell["spell_name"]}}
+                          </ion-card-title>
+                          <ion-card-subtitle>
+                              {{spell["spell_info"]}}
+                          </ion-card-subtitle>
+                        </ion-card-header>
+  
+                       <!-- will need to work out how we want to accept inputs-->
+                        <ion-card-content *ngIf="s == 0" text-center>
+                        Spell inputs:
+                        <ion-list>
+                          <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
+                              <ion-label>
+                                  <!-- <h2>{{sim["input_name"]}}</h2> -->
+                                  <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
+                                  <!-- We will want to make this a component and just add to that? --->
+  
+                                  <!-- If mana -->
+                                  <div *ngIf="sim['takesMana']">
+                                    <h2>Mana source</h2>
+                                    {{sim["input_name"]}} - {{sim["info"]}}
+  
+                                    <!-- We want a drop down for all mana sources by type?-->
+                                    <div *ngIf="sim['takesCSV']">
+  
+  
+                                        <ion-label>CSV Name</ion-label>
+                                        <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
+  
+  
+                                    </div>
+  
+                                    <div *ngIf="sim['takesDB']">
+  
+  
+                                    </div>
+  
+  
+                                    <div *ngIf="sim['takesAPI']">
+  
+  
+                                    </div>
+  
+                                  </div>
+  
+                                  <!-- If takes csv cols -->
+                                  <div *ngIf="sim['takesCSVCol']">
+  
+                                    {{sim["input_name"]}} - {{sim["info"]}}         
+  
+                                    <!-- We want a drop down for all mana sources by type?-->
+                                    <ion-label>Column Input</ion-label>
+                                    <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input>
+  
+  
+  
+  
+  
+                                  </div>
+                                  
+  
+  
+  
+  
+  
+  
+  
+                                </ion-label>
+  
+                          </ion-item>
+  
+                        </ion-list>
+                        </ion-card-content>
+                        </ion-card>
+  
+                </ion-item>
+  
+              </ion-list>
+  
+  
+                      
+              <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
+            </ion-card-content>
+          </ion-card>
+  
+        </ion-col>
+  
+      </ion-row>
+  
+      <ion-row>
+  
+        <ion-col offset=3 size=3>
+          <ion-list>
+            <ion-item>
+              Pipeline: {{pipeline}}
+            </ion-item>
+  
+            <!-- <ion-item>
+              Mana columns
+              {{mana["cols"]}}
+            </ion-item> -->
+          </ion-list>
+  
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+  
+  
+  
+  </ion-content>

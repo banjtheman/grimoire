@@ -6,7 +6,8 @@ import { ModalController, NavController } from '@ionic/angular';
 import { FileUploader, FileLikeObject } from 'ng2-file-upload';
 import { File } from '@ionic-native/file/ngx';
 
-
+import { NewProjectPage } from '../new-project/new-project.page'
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,7 @@ import { File } from '@ionic-native/file/ngx';
 export class HomePage {
 
   //should get from env
-  public api_url = "http://localhost:9000"
+  public api_url = environment.api_url
   public health: any;
 
   public projectName: any;
@@ -30,7 +31,7 @@ export class HomePage {
   public mana: any;
   public pipeline: any;
   public grims: any;
-
+  public projects: any;
 
   //pipeline vars
   public spell_tomb = {}
@@ -43,6 +44,7 @@ export class HomePage {
 
     this.healthCheck()
     this.get_grims()
+    this.getProjects()
 
   }
 
@@ -94,6 +96,55 @@ export class HomePage {
 
 
 
+  }
+
+  async newProject() {
+    console.log('New Project clicked');
+
+    const modal = await this.modalController.create({
+      component: NewProjectPage
+    });
+    return await modal.present();
+
+
+
+  }
+
+
+  getProjects() {
+    console.log("gettign projects")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/get_projects"
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      console.log(data)
+      this.projects = data["projects"]
+      console.log(this.projects)
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.presentModelAlert("Error try again")
+    })
+
+
+
+  }
+
+  keys(obj) {
+    return Object.keys(obj); // good old javascript on the rescue
+  }
+  
+  values(obj) {
+    return Object.values(obj); // good old javascript on the rescue
   }
 
 

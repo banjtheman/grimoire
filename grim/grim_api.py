@@ -13,9 +13,14 @@ from spells import REGISTERED_SPELLS
 
 from flask import jsonify
 import grim
+import redis
+from datetime import datetime
 
 
 #gunicorn --bind 0.0.0.0:9000 --timeout 600 --workers=1 --reload wsgi &
+
+#local redis for now
+r = redis.Redis(host="localhost", port=6379, db=0)
 
 application = Flask(__name__)
 CORS(application)
@@ -36,17 +41,44 @@ def health():
 
     return jsonify(jsonResp)
 
+@application.route("/get_projects")
+def get_projects():
+    jsonResp = {}
+    jsonResp["projects"] = []
+    try:
+        for key in r.scan_iter():
+           proj_object = json.loads(r.get(key))
+           jsonResp["projects"].append(proj_object)
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+    
+    return jsonify(jsonResp)
 
 
 #have api just call grim.py
-@application.route("/create_project")
+@application.route("/create_project", methods=["GET", "POST"])
 def create_project():
     logging.info("Init started")
     jsonResp = {}
     currentDirectory = os.getcwd()
+    raw_data = request.data
+    string_data = raw_data.decode("utf-8")
+    json_data = json.loads(string_data)
+    print("Project data is...")
+    print(json_data)
     try:
-        proj_name = request.args.get("project_name")
+        #proj_name = request.args.get("project_name")
+        proj_name = json_data["name"]
         logging.info("Project name is: " + proj_name)
+
+        proj_desc = json_data["desc"]
+        logging.info("Project desc is: " + proj_desc)
+
+        #check if key already exists
+        # if r.exists(proj_name):
+        #     jsonResp["error"] = "Segfault..."+str(e)
 
         #global projects dir
         #HARDCODED for now...
@@ -75,6 +107,11 @@ def create_project():
       # make grim.ini file
         write_to_file("grim.ini", "hello") 
         jsonResp["status"] = "complete"
+
+      # write to database
+        json_data["createdAt"] = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
+        r.set(proj_name, json.dumps(json_data))
+
 
 
         

@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ModalController, NavController } from '@ionic/angular';
-
 import { FileUploader, FileLikeObject } from 'ng2-file-upload';
 import { File } from '@ionic-native/file/ngx';
 
 import { NewProjectPage } from '../new-project/new-project.page'
 import { environment } from '../../environments/environment';
+
+import { MagicService } from '../services/magic.service'
 
 @Component({
   selector: 'app-home',
@@ -38,7 +39,7 @@ export class HomePage {
 
 
 
-  constructor(private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
+  constructor(public magicService: MagicService , public navCtrl: NavController, private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
 
 
 
@@ -111,8 +112,16 @@ export class HomePage {
   }
 
 
+  viewProject(project) {
+    console.log("going to project page")
+    this.magicService["Data"]["curr_project"] = project
+    this.navCtrl.navigateForward("/project-home")
+    
+  }
+
+
   getProjects() {
-    console.log("gettign projects")
+    console.log("getting projects")
 
     let headers = new HttpHeaders({
       "Content-Type": "application/json",

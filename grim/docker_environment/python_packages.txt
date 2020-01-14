@@ -1,0 +1,10 @@
+flask
+flask-cors
+numpy
+pprint
+gunicorn
+pandas
+setuptools
+requests-toolbelt
+redis
+sklearn

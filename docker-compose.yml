@@ -1,0 +1,20 @@
+version: '3'
+services:
+
+  grim_api:
+    build: grim
+    ports:
+      - "9000:9000"
+      - "8500:80"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  grim_ui:
+    build: grim_ui
+    ports:
+      - "8100:8100"
+    environment:
+      - API_URL=http://grim_api

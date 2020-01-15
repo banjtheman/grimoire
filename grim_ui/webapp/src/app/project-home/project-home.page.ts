@@ -20,4 +20,8 @@ export class ProjectHomePage implements OnInit {
     console.log(this.project)
   }
 
+  navURL(loc){
+    this.navCtrl.navigateForward(loc)
+  }
+
 }

@@ -9,6 +9,7 @@ import { NewProjectPage } from '../new-project/new-project.page'
 import { environment } from '../../environments/environment';
 
 import { MagicService } from '../services/magic.service'
+import { UtilityService } from '../utility.service'
 
 @Component({
   selector: 'app-home',
@@ -39,7 +40,7 @@ export class HomePage {
 
 
 
-  constructor(public magicService: MagicService , public navCtrl: NavController, private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController) {
+  constructor(public magicService: MagicService , public navCtrl: NavController, private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController, public utilityService: UtilityService) {
 
 
 
@@ -50,26 +51,7 @@ export class HomePage {
   }
 
 
-  async presentModelAlert(error) {
-    const alert = await this.alertController.create({
-      header: 'Error',
-      message: error,
-      buttons: ['OK']
-    });
 
-    await alert.present();
-  }
-
-  async presentLoading() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Computing...'
-    });
-    await loading.present();
-  }
-
-  async dismissLoading() {
-    this.loadingCtrl.dismiss()
-  }
 
 
   healthCheck() {
@@ -92,7 +74,7 @@ export class HomePage {
     }, (err) => {
       console.log("ok we should back out");
       console.log(err);
-      this.presentModelAlert("Error try again")
+      this.utilityService.presentModelAlert("Error try again")
     })
 
 
@@ -105,6 +87,10 @@ export class HomePage {
     const modal = await this.modalController.create({
       component: NewProjectPage
     });
+    modal.onDidDismiss().then((data) => {
+      this.getProjects()
+    })
+
     return await modal.present();
 
 
@@ -141,7 +127,7 @@ export class HomePage {
     }, (err) => {
       console.log("ok we should back out");
       console.log(err);
-      this.presentModelAlert("Error try again")
+      this.utilityService.presentModelAlert("Error try again")
     })
 
 
@@ -179,7 +165,7 @@ export class HomePage {
     }, (err) => {
       console.log("ok we should back out");
       console.log(err);
-      this.presentModelAlert("Error try again")
+      this.utilityService.presentModelAlert("Error try again")
     })
 
 
@@ -203,11 +189,12 @@ export class HomePage {
     .then((data) => { // Success
       console.log(data)
       //this.health = data["healthy"]
+      this.getProjects()
 
     }, (err) => {
       console.log("ok we should back out");
       console.log(err);
-      this.presentModelAlert("Error try again")
+      this.utilityService.presentModelAlert("Error try again")
     })
 
 
@@ -235,7 +222,7 @@ export class HomePage {
     }, (err) => {
       console.log("ok we should back out");
       console.log(err);
-      this.presentModelAlert("Error try again")
+      this.utilityService.presentModelAlert("Error try again")
     })
 
 

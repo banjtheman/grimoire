@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'project-home',
     loadChildren: () => import('./project-home/project-home.module').then( m => m.ProjectHomePageModule)
   },
+  {
+    path: 'project-mana',
+    loadChildren: () => import('./project-mana/project-mana.module').then( m => m.ProjectManaPageModule)
+  },
 ];
 
 @NgModule({

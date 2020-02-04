@@ -22,6 +22,18 @@ from datetime import datetime
 #local redis for now
 r = redis.Redis(host="localhost", port=6379, db=0)
 
+
+# Setting up the Logger to show in the notebook
+logLevel = logging.DEBUG
+
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
+                     level=logLevel, stream=sys.stdout)
+
+logger.warning('Log Level set to: {}'.format(logLevel))
+logger.info("Info")
+
 application = Flask(__name__)
 CORS(application)
 
@@ -46,7 +58,8 @@ def get_projects():
     jsonResp = {}
     jsonResp["projects"] = []
     try:
-        for key in r.scan_iter():
+        for key in r.scan_iter("project_*"):
+           print(key)
            proj_object = json.loads(r.get(key))
            jsonResp["projects"].append(proj_object)
     except Exception as e:
@@ -55,6 +68,27 @@ def get_projects():
         jsonResp["error"] = "Segfault..."+str(e)
     
     return jsonify(jsonResp)
+
+
+@application.route("/get_project_mana")
+def get_project_mana():
+    jsonResp = {}
+    jsonResp["sources"] = []
+    
+    proj_name = request.args.get("project_name")
+    logging.info("Project name is: " + proj_name)
+    scan_key = "mana_"+proj_name+"*"
+    try:
+        for key in r.scan_iter(scan_key):
+           source_object = json.loads(r.get(key))
+           jsonResp["sources"].append(source_object)
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+    
+    return jsonify(jsonResp)
+
 
 
 #have api just call grim.py
@@ -110,7 +144,7 @@ def create_project():
 
       # write to database
         json_data["createdAt"] = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
-        r.set(proj_name, json.dumps(json_data))
+        r.set("project_"+proj_name, json.dumps(json_data))
 
 
 
@@ -183,6 +217,21 @@ def add_mana_source(mana_object):
 
 
                 os.chdir(currentDirectory) 
+
+
+                #store data in redis
+                proj_key = "mana_"+mana_object["project_name"]+"_"+file_name
+                
+                redis_data = {}
+                redis_data["file_name"] = file_name
+                redis_data["cols"] = list(df.columns)
+                redis_data["createdAt"] = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
+
+                print("sendt to redis")
+                print(proj_key)
+                print(str(redis_data))
+
+                r.set(proj_key, json.dumps(redis_data))
 
                 return jsonResp
     

@@ -1,0 +1,155 @@
+<ion-header style="background-color: black">
+  <ion-row>
+    <ion-col size=4>
+      <div style="color:azure">Grimorie
+        <!-- <ion-chip color="light" (click)="showProfile()" *ngIf="auth.isLoggedIn">
+          <ion-label>
+            <h2>{{auth.Profile["email"]}} &nbsp;</h2>
+          </ion-label>
+          <ion-avatar>
+            <img src="{{auth.Profile['picture']}}">
+          </ion-avatar>
+          <ion-icon name="arrow-dropdown"></ion-icon>
+        </ion-chip> -->
+        <ion-label (click)="utilityService.navURL('/')">
+          Home
+        </ion-label>
+
+
+
+      </div>
+
+    </ion-col>
+    <!-- <ion-col offset=7 size=1>
+      <ion-button shape="round" expand="full" color="secondary" (click)="auth.login()" *ngIf="!auth.isLoggedIn">Log In
+      </ion-button>
+      <ion-button shape="round" expand="full" color="danger" (click)="auth.logout()" *ngIf="auth.isLoggedIn">Log Out
+      </ion-button>
+    </ion-col> -->
+  </ion-row>
+</ion-header>
+
+<ion-content>
+
+
+
+  <ion-grid>
+
+
+    <h1 text-center>Mana sources</h1>
+    <ion-row>
+        <ion-col size=2 *ngFor="let source of mana_sources">
+            <ion-card>
+              <ion-card-header>
+                <ion-title text-center>
+                  <h1>{{source["file_name"]}}</h1>
+                </ion-title>
+              </ion-card-header>
+              <ion-card-content text-center>
+                Data Source
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+    </ion-row>
+
+
+
+    <h2 text-center>Add new Source</h2>
+    <ion-row>
+      <ion-col offset=3 size=2>
+        <ion-card (click)="change_mana_type('csv')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>CSV</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Upload a CSV file
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size=2>
+        <ion-card (click)="change_mana_type('db')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>Database</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Pull from a Database
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size=2>
+        <ion-card (click)="change_mana_type('api')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>API</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Hit api endpoint
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+    <!-- <ion-row>
+      <ion-col size=3>
+
+        <ion-item>
+          <ion-label>Mana type</ion-label>
+
+          <ion-select [(ngModel)]="mana_type" okText="Okay" cancelText="Dismiss">
+            <ion-select-option value="csv">csv</ion-select-option>
+            <ion-select-option value="db">db</ion-select-option>
+            <ion-select-option value="api">api</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+
+
+
+
+      </ion-col>
+
+    </ion-row> -->
+    <br>
+    <br>
+    <ion-row>
+      <ion-col offset=4 size=3 *ngIf="mana_type == 'csv';">
+
+        <ion-list>
+          <ion-item>
+            <ion-label>File Upload</ion-label>
+            <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
+                  </ion-input> -->
+            <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
+
+          </ion-item>
+
+
+          <ion-item>
+
+            <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
+              <b>Upload CSV</b>
+            </ion-button>
+          </ion-item>
+
+        </ion-list>
+
+
+
+
+      </ion-col>
+
+
+
+
+
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

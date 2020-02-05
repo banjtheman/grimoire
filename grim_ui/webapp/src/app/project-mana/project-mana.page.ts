@@ -24,6 +24,15 @@ export class ProjectManaPage implements OnInit {
   public project: any
   public mana: any;
   public mana_sources: any;
+  public current_source = null;
+
+
+  public pipeline: any;
+  public grims: any;
+  public projects: any;
+
+  //pipeline vars
+  public spell_tomb = {}
 
   constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController,public utilityService: UtilityService, private file_writer: File,public alertController: AlertController) { }
 
@@ -31,6 +40,7 @@ export class ProjectManaPage implements OnInit {
     this.project = this.magicService["Data"]["curr_project"]
     console.log(this.project)
     this.getSources()
+    this.get_grims()
   }
 
 
@@ -66,6 +76,96 @@ export class ProjectManaPage implements OnInit {
     this.mana_type=mtype
 
   }
+
+
+  set_pipeline(val){
+    this.pipeline = val
+  }
+
+  set_source(val){
+    this.current_source = val
+    this.spell_tomb["mana_location"] = "mana/"+val["file_name"]
+  }
+
+  get_grims() {
+    console.log("getting grims")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/get_grims"
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      
+      this.grims = data["grims"]
+      console.log(this.grims)
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.utilityService.presentModelAlert("Error try again")
+    })
+
+
+
+  }
+
+  cast_grim(grimID){
+    console.log("Going to cast grimID: "+grimID)
+    console.dir(this.grims[grimID])
+    console.log("Got this spell tomb")
+    console.dir(this.spell_tomb)
+
+    //We want to update grim with the new spell tomb
+    let spells = this.grims[grimID]
+
+    //update the first spell inputs with new data
+    spells["spells"][0]["spell_inputs"] = this.spell_tomb
+
+
+    console.log("Here is updated spell tomb")
+    console.dir(spells)
+
+    //Send post request with spells to backend
+        // POST formData to Server
+        let headers = new HttpHeaders({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        });
+    
+    
+    
+        var url = this.api_url + "/cast_grim?project_name="+this.project["name"]
+        console.log("calling this url: " + url);
+    
+        this.http.post(url, spells, { headers: headers }).toPromise()
+          .then((data) => { // Success
+            console.log(data)
+            this.mana = data
+            // this.file_name = data["file_name"]
+    
+            // this.modalController.dismiss({
+            //   'file_upload': this.file_upload,
+            //   'file_name': this.file_name,
+            // });
+    
+          }, (err) => {
+            console.log("ok we should back out");
+            console.log(err);
+          })
+
+
+
+
+    
+  }
+
+
 
   upload() {
 

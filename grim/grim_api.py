@@ -394,13 +394,20 @@ def cast_grim():
         logging.error(e)
         jsonResp["error"] = "Segfault..."+str(e)
         os.chdir(currentDirectory)
-        return jsonify(jsonResp)    
+        return jsonify(jsonResp)
 
 
 
+
+
+    finished_casts_path = "casts/"+grimoire["name"]+"_cast_completed.json" 
+
+    with open(finished_casts_path) as json_file:
+        cast = json.loads(json_file)
 
     
     jsonResp["status"] = "got it"
+    jsonResp["cast"] = cast
     os.chdir(currentDirectory)
 
     return jsonify(jsonResp)

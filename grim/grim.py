@@ -365,8 +365,12 @@ def main(args, loglevel):
                 #output spell tomb?
                 print(str(spell_tomb))
 
+                finished_casts_path = "casts/"+grim_name+"_cast_completed.json" 
+                with open(finished_casts_path, 'w') as outfile:
+                    json.dumps(spell_tomb, outfile)
+
                 # make grim.ini file
-                write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
+                #write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
                 
 
 

@@ -113,7 +113,10 @@ def cast(cast_path):
             #output spell tomb?
             print(str(spell_tomb))
             # make grim.ini file
-            write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
+            finished_casts_path= "casts/"+grim_name+"_cast_completed.json"
+            with open(finished_casts_path, 'w' , encoding='utf-8') as f:
+                   json.dump(spell_tomb, f, ensure_ascii=False, indent=4)
+            #write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
 
     except Exception as e:
         logging.info("Yikes bad error")
@@ -361,16 +364,17 @@ def main(args, loglevel):
                     #how do we call dvc here maybe we dont...
                     spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
 
-                logging.info("cast complete")
+                logging.info("cast complete lol cats")
                 #output spell tomb?
-                print(str(spell_tomb))
+
+                print(spell_tomb)
 
                 finished_casts_path = "casts/"+grim_name+"_cast_completed.json" 
-                with open(finished_casts_path, 'w') as outfile:
-                    json.dumps(spell_tomb, outfile)
+                # with open(finished_casts_path, 'w' , encoding='utf-8') as f:
+                #    json.dump(spell_tomb, f, ensure_ascii=False, indent=4)
 
                 # make grim.ini file
-                #write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
+                write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
                 
 
 

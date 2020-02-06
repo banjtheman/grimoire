@@ -288,12 +288,12 @@
 
     </ion-row>
 
-    <ion-row>
-
-      <ion-col offset=3 size=3>
+    <ion-row *ngIf="showResults">
+      <h1 text-center>Results</h1>
+      <ion-col>
         <ion-list>
           <ion-item>
-            Pipeline: {{pipeline}}
+            Results object: {{results}}
           </ion-item>
 
           <!-- <ion-item>

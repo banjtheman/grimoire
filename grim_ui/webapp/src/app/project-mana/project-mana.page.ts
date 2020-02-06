@@ -30,11 +30,13 @@ export class ProjectManaPage implements OnInit {
   public pipeline: any;
   public grims: any;
   public projects: any;
+  public results: any
+  public showResults = false
 
   //pipeline vars
   public spell_tomb = {}
 
-  constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController,public utilityService: UtilityService, private file_writer: File,public alertController: AlertController) { }
+  constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, private file_writer: File, public alertController: AlertController) { }
 
   ngOnInit() {
     this.project = this.magicService["Data"]["curr_project"]
@@ -52,39 +54,39 @@ export class ProjectManaPage implements OnInit {
       "Access-Control-Allow-Origin": "*"
     });
 
-    var url = this.api_url + "/get_project_mana?project_name="+this.project["name"]
+    var url = this.api_url + "/get_project_mana?project_name=" + this.project["name"]
 
 
 
     this.http.get(url, { headers: headers }).toPromise()
-    .then((data) => { // Success
-      console.log(data)
-      this.mana_sources = data["sources"]
-      console.log(this.mana_sources)
+      .then((data) => { // Success
+        console.log(data)
+        this.mana_sources = data["sources"]
+        console.log(this.mana_sources)
 
-    }, (err) => {
-      console.log("ok we should back out");
-      console.log(err);
-      this.utilityService.presentModelAlert("Error try again")
-    })
+      }, (err) => {
+        console.log("ok we should back out");
+        console.log(err);
+        this.utilityService.presentModelAlert("Error try again")
+      })
 
 
-
-  }
-
-  change_mana_type(mtype){
-    this.mana_type=mtype
 
   }
 
+  change_mana_type(mtype) {
+    this.mana_type = mtype
 
-  set_pipeline(val){
+  }
+
+
+  set_pipeline(val) {
     this.pipeline = val
   }
 
-  set_source(val){
+  set_source(val) {
     this.current_source = val
-    this.spell_tomb["mana_location"] = "mana/"+val["file_name"]
+    this.spell_tomb["mana_location"] = "mana/" + val["file_name"]
   }
 
   get_grims() {
@@ -100,23 +102,23 @@ export class ProjectManaPage implements OnInit {
 
 
     this.http.get(url, { headers: headers }).toPromise()
-    .then((data) => { // Success
-      
-      this.grims = data["grims"]
-      console.log(this.grims)
+      .then((data) => { // Success
 
-    }, (err) => {
-      console.log("ok we should back out");
-      console.log(err);
-      this.utilityService.presentModelAlert("Error try again")
-    })
+        this.grims = data["grims"]
+        console.log(this.grims)
+
+      }, (err) => {
+        console.log("ok we should back out");
+        console.log(err);
+        this.utilityService.presentModelAlert("Error try again")
+      })
 
 
 
   }
 
-  cast_grim(grimID){
-    console.log("Going to cast grimID: "+grimID)
+  cast_grim(grimID) {
+    console.log("Going to cast grimID: " + grimID)
     console.dir(this.grims[grimID])
     console.log("Got this spell tomb")
     console.dir(this.spell_tomb)
@@ -132,37 +134,38 @@ export class ProjectManaPage implements OnInit {
     console.dir(spells)
 
     //Send post request with spells to backend
-        // POST formData to Server
-        let headers = new HttpHeaders({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        });
-    
-    
-    
-        var url = this.api_url + "/cast_grim?project_name="+this.project["name"]
-        console.log("calling this url: " + url);
-    
-        this.http.post(url, spells, { headers: headers }).toPromise()
-          .then((data) => { // Success
-            console.log(data)
-            this.mana = data
-            // this.file_name = data["file_name"]
-    
-            // this.modalController.dismiss({
-            //   'file_upload': this.file_upload,
-            //   'file_name': this.file_name,
-            // });
-    
-          }, (err) => {
-            console.log("ok we should back out");
-            console.log(err);
-          })
+    // POST formData to Server
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+
+
+    var url = this.api_url + "/cast_grim?project_name=" + this.project["name"]
+    console.log("calling this url: " + url);
+
+    this.http.post(url, spells, { headers: headers }).toPromise()
+      .then((data) => { // Success
+        console.log(data)
+        this.showResults = true
+        this.results = data
+        // this.file_name = data["file_name"]
+
+        // this.modalController.dismiss({
+        //   'file_upload': this.file_upload,
+        //   'file_name': this.file_name,
+        // });
+
+      }, (err) => {
+        console.log("ok we should back out");
+        console.log(err);
+      })
 
 
 
 
-    
+
   }
 
 
@@ -172,7 +175,7 @@ export class ProjectManaPage implements OnInit {
 
 
     let files = this.getFiles();
-    
+
     console.log(files);
 
     console.log(files[0].type)
@@ -198,7 +201,7 @@ export class ProjectManaPage implements OnInit {
 
 
 
-    var url = this.api_url + "/add_csv_mana_source?project_name="+this.project["name"]
+    var url = this.api_url + "/add_csv_mana_source?project_name=" + this.project["name"]
     console.log("calling this url: " + url);
 
     this.http.post(url, formData, { headers: headers }).toPromise()
@@ -222,26 +225,26 @@ export class ProjectManaPage implements OnInit {
 
 
   }
-     //File upload functions!!!
-     async presentAlert() {
-      const alert = await this.alertController.create({
-        header: 'Error',
-        message: 'Must upload valid csv file',
-        buttons: ['OK']
-      });
-  
-      await alert.present();
-    }
+  //File upload functions!!!
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Must upload valid csv file',
+      buttons: ['OK']
+    });
 
-  clearQueue(){
-    if (this.uploader.queue.length >= 1){
+    await alert.present();
+  }
+
+  clearQueue() {
+    if (this.uploader.queue.length >= 1) {
       this.uploader.queue[0].remove()
     }
-    
+
   }
 
   getFiles(): FileLikeObject[] {
-    
+
     return this.uploader.queue.map((fileItem) => {
       console.log(fileItem)
       return fileItem.file;

@@ -400,10 +400,13 @@ def cast_grim():
 
 
 
-    finished_casts_path = "casts/"+grimoire["name"]+"_cast_completed.json" 
+    finished_casts_path = "casts/"+grimoire["name"]+"_cast_completed.json"
+
+
+    print("loading complete cast")
 
     with open(finished_casts_path) as json_file:
-        cast = json.loads(json_file)
+        cast = json.load(json_file)
 
     
     jsonResp["status"] = "got it"

@@ -59,15 +59,15 @@ def spell(spell_inputs):
     )  # what data to split and how to do it.
 
     healed_data = {}
-    healed_data["train_features"] = train_features
-    healed_data["train_target"] = train_target
-    healed_data["test_features"] = test_features
-    healed_data["test_target"] = test_target
+    healed_data["train_features"] = train_features.tolist()
+    healed_data["train_target"] = train_target.tolist()
+    healed_data["test_features"] = test_features.tolist()
+    healed_data["test_target"] = test_target.tolist()
     healed_data["feature_list"] = feature_list
-    healed_data["features_arr"] = featuresarr
-    healed_data["target"] = target
+    healed_data["features_arr"] = featuresarr.tolist()
+    healed_data["target"] = target.tolist()
     healed_data["target_string"] = target_string
-    healed_data["mana"] = mana.to_json()
+    healed_data["mana"] = mana.values.tolist()
     healed_data["mana_len"] = len(mana)
 
     return healed_data

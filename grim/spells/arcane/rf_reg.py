@@ -126,4 +126,13 @@ def spell(spell_inputs):
     print("MSE = %.3f" % mse)
     print("RMSE = %.3f" % rmse)
 
-    return rf
+    jsonOutput ={}
+    jsonOutput["model_location"] = model_output_loc
+    jsonOutput["r2"] = r2
+    jsonOutput["mse"] = mse
+    jsonOutput["RMSE"] = rmse
+    jsonOutput["importances"] = importances
+    jsonOutput["predictions"] = predictions.tolist()
+    print("new code")
+
+    return jsonOutput

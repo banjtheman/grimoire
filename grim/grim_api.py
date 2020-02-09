@@ -70,6 +70,27 @@ def get_projects():
     return jsonify(jsonResp)
 
 
+@application.route("/get_casts")
+def get_casts():
+    jsonResp = {}
+    jsonResp["casts"] = []
+
+    proj_name = request.args.get("project_name")
+    logging.info("Project name is: " + proj_name)
+    scan_key = "cast_"+proj_name+"*"
+    try:
+        for key in r.scan_iter(scan_key):
+           print(key)
+           cast_object = json.loads(r.get(key))
+           jsonResp["casts"].append(cast_object)
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+    
+    return jsonify(jsonResp)
+
+
 @application.route("/get_project_mana")
 def get_project_mana():
     jsonResp = {}
@@ -333,6 +354,10 @@ def cast_grim():
     proj_name = request.args.get("project_name")
     print("Project name is: " + proj_name)
 
+
+    mana_source = request.args.get("mana")
+    print("Mana source is: " + mana_source)
+
     grim_path = "projects/"+proj_name
 
 
@@ -342,6 +367,7 @@ def cast_grim():
     print(grimoire["name"])
 
     cast_path = grim_path+"/casts/"+grimoire["name"]+".json"
+    finished_casts_json = {}
 
     #write the json to cast path
     with open(cast_path, 'w') as outfile:
@@ -373,7 +399,12 @@ def cast_grim():
 
         #dvc_command = "dvc run -f grim.dvc -d grim.py -d "+local_casts_path+" -o casts/"+grim["name"]+"_cast_completed.json python grim.py cast "+local_casts_path
         #subprocess.call(dvc_command, shell=True)
-        grim.cast(local_casts_path)
+        finished_casts_json = grim.cast(local_casts_path,mana_source)
+        if "error" in finished_casts_json:
+            jsonResp["error"] = finished_casts_json["error"]
+            os.chdir(currentDirectory)
+            return jsonify(jsonResp)
+
 
         #think about how we would capture metrics??
         #we can look at completed file, and make it here
@@ -388,7 +419,6 @@ def cast_grim():
 
         dvc_command = 'dvc push'
         subprocess.call(dvc_command, shell=True)
-
     except Exception as e:
         logging.info("Yikes bad error")
         logging.error(e)
@@ -397,20 +427,20 @@ def cast_grim():
         return jsonify(jsonResp)
 
 
-
-
-
-    finished_casts_path = "casts/"+grimoire["name"]+"_cast_completed.json"
-
-
     print("loading complete cast")
+    finished_casts_path = finished_casts_json["full_path"]
+    time_now = finished_casts_json["time_now"]
+
+    #so save in redis? and have a json output file as well
 
     with open(finished_casts_path) as json_file:
         cast = json.load(json_file)
 
-    
+    r.set("cast_"+proj_name+"_"+time_now, json.dumps(cast))
+
     jsonResp["status"] = "got it"
     jsonResp["cast"] = cast
+
     os.chdir(currentDirectory)
 
     return jsonify(jsonResp)

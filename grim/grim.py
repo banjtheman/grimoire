@@ -7,6 +7,8 @@ import os
 import subprocess
 import json
 from spells import REGISTERED_SPELLS
+from datetime import datetime
+
 
 def write_to_file(filename, content):
     f = open(filename, "w")
@@ -58,7 +60,7 @@ def init(project_name):
 
 
 
-def cast(cast_path):
+def cast(cast_path,mana_source):
     loglevel = logging.INFO
     logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)    
     logging.info("cast started")
@@ -76,16 +78,26 @@ def cast(cast_path):
             grim_name = grim["name"]
             grim_value = grim["value"]
             grim_pipeline = grim["spells"]
+
             #grim_path =  grim["grim_path"]
 
             #Cast spell
             logging.info("Running grimorie "+grim_name)
             logging.info("This grimorie is good because... "+grim_value)
 
-            spell_tomb = {}
+            spell_tomb = {}  #for running spell
+
+            spell_tomb_formatted = {} #what we want to show in UI
+            spell_tomb_formatted["grim_name"] = grim["name"]
+            spell_tomb_formatted["grim_value"] = grim["value"]
+            spell_tomb_formatted["mana_source"] = mana_source
+            spell_tomb_formatted["spells"] = []
 
             for spell in grim_pipeline:
                 logging.debug(spell)
+
+                spell_formatted_object = {}
+                
                 #run first spell?
                 spell_type = spell["spell_type"]
                 spell_name = spell["spell_name"]
@@ -93,35 +105,66 @@ def cast(cast_path):
                 spell_inputs = spell["spell_inputs"]
                 spell_output = spell["spell_output"]
 
+                spell_formatted_object["spell_type"] = spell_type
+                spell_formatted_object["spell_name"] = spell_name
+                spell_formatted_object["spell_info"] = spell_info
+
                 for spell_input in spell_inputs.keys():
                     #only add input if not in tomb
                     if spell_input not in spell_tomb:
                         logging.debug("adding this to spelltomb : "+spell_input)
                         spell_tomb[spell_input] = spell_inputs[spell_input]
+                        #spell_formatted_object["spell_input"] = spell_inputs[spell_input]
                     else:
                         #spell input is in tomb, replace value
                         spell_inputs[spell_input] = spell_tomb[spell_input]
+                        #spell_formatted_object["spell_input"] = spell_tomb[spell_input]
 
-                    logging.info("Casting "+spell_type+" "+spell_name)
-                    logging.info(spell_info)
+                logging.info("Casting "+spell_type+" "+spell_name)
+                logging.info(spell_info)
 
                     #output is equal to spell cast
                     #how do we call dvc here maybe we dont...
-                    spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
+                spell_formatted_object["spell_inputs"] = spell_inputs   
+                spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
+                spell_formatted_object["spell_output"] = spell_tomb[spell_output]
+                #print("Adding to spell_tomb_fomrtated")
+                #print(spell_formatted_object)
+                spell_tomb_formatted["spells"].append(spell_formatted_object)
 
             logging.info("cast complete")
             #output spell tomb?
-            print(str(spell_tomb))
+            time_now = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
+            spell_tomb_formatted["timestamp"] = time_now
+
+            #print(str(spell_tomb_formatted))
             # make grim.ini file
-            finished_casts_path= "casts/"+grim_name+"_cast_completed.json"
+            finished_casts_path = "casts/"+grim_name+"_cast_completed_"+time_now+".json"
+
             with open(finished_casts_path, 'w' , encoding='utf-8') as f:
-                   json.dump(spell_tomb, f, ensure_ascii=False, indent=4)
+                   json.dump(spell_tomb_formatted, f, ensure_ascii=False, indent=4)
             #write_to_file("casts/"+grim_name+"_cast_completed.json", str(spell_tomb))
 
+            jsonResp = {}
+            jsonResp["full_path"] = finished_casts_path
+            jsonResp["time_now"] = time_now
+            #jsonResp["metadata"] = spell_tomb_formatted
+            print("Cast from grim.py done")
+            print(str(jsonResp))
+
+            return jsonResp
+    except KeyError as e:
+        logging.info("Yikes key error")
+        logging.error(e)
+        jsonResp = {}
+        jsonResp["error"] = "Key error"
+        return jsonResp
     except Exception as e:
         logging.info("Yikes bad error")
         logging.error(e)
-        sys.exit(-1)
+        jsonResp = {}
+        jsonResp["error"] = e
+        return jsonResp
 
 
 

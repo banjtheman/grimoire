@@ -168,6 +168,9 @@
 
 
 
+
+
+
   <ion-grid *ngIf="current_source">
 
     <h1 text-center>Grimoires</h1>
@@ -222,7 +225,7 @@
 
                               <ion-label>CSV Name</ion-label>
                               <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]" value="{{current_source['file_name']}}">
-                                {{current_source["file_name"]}}</ion-input>
+                                </ion-input>
 
                             </div>
 
@@ -305,5 +308,38 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+
+
+  <ion-grid>
+      <h1 text-center>Completed Spells</h1>
+      <ion-row>
+        <ion-col>
+  
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Grimoire</th>
+                <th>Purpose</th>
+                <th>Mana Source</th>
+                <th>Timestamp</th>
+                <th>View Cast</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cast of casts; let i = index">
+                  <td>{{cast["grim_name"]}}</td>
+                  <td>{{cast["grim_value"]}}</td>
+                  <td>{{cast["mana_source"]}}</td>
+                  <td>{{cast["timestamp"]}}</td>
+                  <ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button>
+              </tr>
+            </tbody>
+          </table>
+        </ion-col>
+      </ion-row>
+  
+    </ion-grid>
+  
 
 </ion-content>

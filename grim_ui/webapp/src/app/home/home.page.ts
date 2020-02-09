@@ -101,7 +101,7 @@ export class HomePage {
   viewProject(project) {
     console.log("going to project page")
     this.magicService["Data"]["curr_project"] = project
-    this.navCtrl.navigateForward("/project-home")
+    this.navCtrl.navigateForward("/project-mana")
     
   }
 

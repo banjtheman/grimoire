@@ -23,6 +23,7 @@ export class ProjectManaPage implements OnInit {
   public api_url = environment.api_url
   public project: any
   public mana: any;
+  public casts: any;
   public mana_sources: any;
   public current_source = null;
 
@@ -43,6 +44,42 @@ export class ProjectManaPage implements OnInit {
     console.log(this.project)
     this.getSources()
     this.get_grims()
+    this.getCasts()
+  }
+
+  viewCast(cast){
+    console.log("viewing cast")
+    console.log(cast)
+
+  }
+
+
+  getCasts() {
+    console.log("getting casts")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/get_casts?project_name=" + this.project["name"]
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+      .then((data) => { // Success
+        console.log(data)
+        this.casts = data["casts"]
+        console.log(this.casts)
+
+      }, (err) => {
+        console.log("ok we should back out");
+        console.log(err);
+        this.utilityService.presentModelAlert("Error try again")
+      })
+
+
+
   }
 
 
@@ -86,6 +123,7 @@ export class ProjectManaPage implements OnInit {
 
   set_source(val) {
     this.current_source = val
+    console.log(val)
     this.spell_tomb["mana_location"] = "mana/" + val["file_name"]
   }
 
@@ -142,7 +180,7 @@ export class ProjectManaPage implements OnInit {
 
 
 
-    var url = this.api_url + "/cast_grim?project_name=" + this.project["name"]
+    var url = this.api_url + "/cast_grim?project_name=" + this.project["name"]+"&mana="+this.current_source["file_name"]
     console.log("calling this url: " + url);
 
     this.http.post(url, spells, { headers: headers }).toPromise()
@@ -150,6 +188,9 @@ export class ProjectManaPage implements OnInit {
         console.log(data)
         this.showResults = true
         this.results = data
+
+        //refresh casts
+        this.getCasts()
         // this.file_name = data["file_name"]
 
         // this.modalController.dismiss({

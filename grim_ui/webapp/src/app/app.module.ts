@@ -12,11 +12,14 @@ import { AppRoutingModule } from './app-routing.module';
 //added
 import { HttpClientModule } from '@angular/common/http';
 import { NewProjectPageModule } from './new-project/new-project.module';
+import { DataTablesModule } from 'angular-datatables';
+
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,NewProjectPageModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, NewProjectPageModule,
+    DataTablesModule.forRoot()],
   providers: [
     StatusBar,
     SplashScreen,
@@ -24,4 +27,4 @@ import { NewProjectPageModule } from './new-project/new-project.module';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

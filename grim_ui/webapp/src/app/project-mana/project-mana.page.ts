@@ -34,10 +34,18 @@ export class ProjectManaPage implements OnInit {
   public results: any
   public showResults = false
 
+  dtOptions: DataTables.Settings = {};
+
   //pipeline vars
   public spell_tomb = {}
 
-  constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, private file_writer: File, public alertController: AlertController) { }
+  constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, private file_writer: File, public alertController: AlertController) {
+
+    this.dtOptions = {
+      pageLength: 20,
+      scrollX: true
+    };
+   }
 
   ngOnInit() {
     this.project = this.magicService["Data"]["curr_project"]

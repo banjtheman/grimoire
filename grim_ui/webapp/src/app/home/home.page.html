@@ -8,71 +8,67 @@
 
 <ion-content>
 
+
+  <h1 text-center>Projects</h1>
+
+
+  <ion-list>
     <ion-grid>
-        <ion-row>
-          <ion-col size-xs="auto" offset-xs="1" offset-lg="3" size-lg="3">
-            <h1>Projects</h1>
-          </ion-col>
-          <ion-col padding-top size-xs="auto" offset-xs="2" offset-lg="2" size-lg="2">
-            <ion-button shape="round" color="primary" (click)="newProject()">
-              <ion-icon slot="start" name="add"></ion-icon>
-              <b>New Project</b>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-    </ion-grid>
+      <ion-row>
 
-
-    <ion-list>
-        <ion-grid>
-          <ion-row>
-  
-            <ion-col col-md-4 class="project-content" size-sm="12" size-md="4" text-center *ngFor="let project of projects">
-              <ion-card>
-                <!-- <ion-card-header color="dark">
+        <ion-col col-md-4 class="project-content" size-sm="12" size-md="3" text-center *ngFor="let project of projects">
+          <ion-card>
+            <ion-card-header>
                   <ion-card-title>
-                    <b>{{job.payload.val()["details"]["title"]}}</b>
+                    <h1>{{project["name"]}} - {{project["desc"]}}</h1>
                   </ion-card-title>
-                  <ion-card-subtitle>{{job.payload.val()["details"]["url"]}}</ion-card-subtitle>
-                </ion-card-header> -->
-  
-                <ion-card-content>
-  
-                  <h2>
-                    <b>{{project["name"]}}</b>
-                  </h2>
+                </ion-card-header>
 
-                  <p>Created by placeholder - {{project["createdAt"]}}</p>
-  
-                  <p>
-                    {{project["desc"]}}
-                  </p>
-                  <ion-row>
-                    <ion-col>
-                      <div class="tooltip">
-                        <ion-button shape="round" color="primary" (click)="viewProject(project)">
-                          <ion-icon slot="start" name="eye"></ion-icon>
-                          <b>Spells</b>
-                        </ion-button>
-                        <span class="tooltiptext">Conjure Spells</span>
-                      </div>
-  
-                    </ion-col>
-                    <ion-col>
-                      <div class="tooltip">
-                        <ion-button shape="round" color="medium" (click)="deleteJobAlertConfirm(job)">
-                          <ion-icon name="trash"></ion-icon>
-                        </ion-button>
-                        <span class="tooltiptext">Delete Project</span>
-                      </div>
-                    </ion-col>
-                  </ion-row>
-                </ion-card-content>
-              </ion-card>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-list>
+            <ion-card-content>
+
+
+
+              <h2>Created:  {{project["createdAt"]}}</h2>
+
+
+              <ion-row>
+                <ion-col class="proj_col">
+                  <div class="tooltip">
+                    <ion-button shape="round" color="primary" (click)="viewProject(project)">
+                      <ion-icon slot="start" name="eye"></ion-icon>
+                      <b>Spells</b>
+                    </ion-button>
+                    <span class="tooltiptext">Conjure Spells</span>
+                  </div>
+
+                </ion-col>
+                <ion-col class="proj_col">
+                  <div class="tooltip">
+                    <ion-button shape="round" color="medium" (click)="deleteProjectAlertConfirm(project)">
+                      <ion-icon name="trash"></ion-icon>
+                    </ion-button>
+                    <span class="tooltiptext">Delete Project</span>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size-sm="12" size-md="3">
+          <ion-card text-center (click)="newProject()">
+            <ion-card-content>
+
+              <ion-icon class="item new_icon" slot="icon-only" color="primary" name="add-circle-outline"></ion-icon>
+
+            </ion-card-content>
+          </ion-card>
+
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
 
 
 

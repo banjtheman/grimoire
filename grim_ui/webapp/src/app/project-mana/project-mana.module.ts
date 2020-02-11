@@ -8,6 +8,8 @@ import { ProjectManaPageRoutingModule } from './project-mana-routing.module';
 
 import { ProjectManaPage } from './project-mana.page';
 import { FileUploadModule } from 'ng2-file-upload';
+import { DataTablesModule } from 'angular-datatables';
+
 
 
 @NgModule({
@@ -15,6 +17,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     CommonModule,
     FormsModule,
     IonicModule,
+    DataTablesModule,
     FileUploadModule,
     ProjectManaPageRoutingModule
   ],

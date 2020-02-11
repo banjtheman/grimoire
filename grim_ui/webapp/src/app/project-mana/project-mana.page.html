@@ -315,8 +315,8 @@
       <h1 text-center>Completed Spells</h1>
       <ion-row>
         <ion-col>
-  
-          <table datatable [dtOptions]="dtOptions" class="row-border hover">
+          <div *ngIf="showCasts">
+          <table id="cast_table" datatable [dtOptions]="dtOptions" class="row-border hover">
             <thead>
               <tr>
                 <th>Grimoire</th>
@@ -332,10 +332,11 @@
                   <td>{{cast["grim_value"]}}</td>
                   <td>{{cast["mana_source"]}}</td>
                   <td>{{cast["timestamp"]}}</td>
-                  <ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button>
+                  <td><ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button></td>
               </tr>
             </tbody>
           </table>
+        </div>
         </ion-col>
       </ion-row>
   

@@ -7,6 +7,7 @@ export class MagicService {
 
 
   Data = {}
+  isBlank = true
 
 
 

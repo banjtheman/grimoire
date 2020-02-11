@@ -147,6 +147,7 @@ export class HomePage {
 
   viewProject(project) {
     console.log("going to project page")
+    this.magicService.isBlank = false
     this.magicService["Data"]["curr_project"] = project
     this.navCtrl.navigateForward("/project-mana")
     

@@ -33,6 +33,7 @@ export class ProjectManaPage implements OnInit {
   public projects: any;
   public results: any
   public showResults = false
+  public showCasts = false
 
   dtOptions: DataTables.Settings = {};
 
@@ -42,12 +43,17 @@ export class ProjectManaPage implements OnInit {
   constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, private file_writer: File, public alertController: AlertController) {
 
     this.dtOptions = {
-      pageLength: 20,
-      scrollX: true
+      pageLength: 20
     };
    }
 
   ngOnInit() {
+    if (this.magicService.isBlank){
+      console.log("return")
+      window.location.href = "/";
+    }
+
+
     this.project = this.magicService["Data"]["curr_project"]
     console.log(this.project)
     this.getSources()
@@ -79,6 +85,11 @@ export class ProjectManaPage implements OnInit {
         console.log(data)
         this.casts = data["casts"]
         console.log(this.casts)
+
+        // $('#cast_table').DataTable().clear();
+        // $('#cast_table').DataTable().destroy();
+        this.showCasts = true
+        // $('#cast_table').DataTable().draw()
 
       }, (err) => {
         console.log("ok we should back out");

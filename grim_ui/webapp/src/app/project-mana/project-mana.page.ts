@@ -65,6 +65,10 @@ export class ProjectManaPage implements OnInit {
     console.log("viewing cast")
     console.log(cast)
 
+    //change to cast page, set current cast to cast
+    this.magicService["Data"]["curr_cast"] = cast
+    this.navCtrl.navigateForward("/view-cast");
+
   }
 
 

@@ -1,35 +1,18 @@
-<ion-header style="background-color: black">
-  <ion-row>
-    <ion-col size=4>
-      <div style="color:azure">Grimorie
-        <!-- <ion-chip color="light" (click)="showProfile()" *ngIf="auth.isLoggedIn">
-          <ion-label>
-            <h2>{{auth.Profile["email"]}} &nbsp;</h2>
-          </ion-label>
-          <ion-avatar>
-            <img src="{{auth.Profile['picture']}}">
-          </ion-avatar>
-          <ion-icon name="arrow-dropdown"></ion-icon>
-        </ion-chip> -->
-        <ion-label (click)="utilityService.navURL('/')">
-          Home
-        </ion-label>
-
-
-
-      </div>
-
-    </ion-col>
-    <!-- <ion-col offset=7 size=1>
-      <ion-button shape="round" expand="full" color="secondary" (click)="auth.login()" *ngIf="!auth.isLoggedIn">Log In
-      </ion-button>
-      <ion-button shape="round" expand="full" color="danger" (click)="auth.logout()" *ngIf="auth.isLoggedIn">Log Out
-      </ion-button>
-    </ion-col> -->
-  </ion-row>
-</ion-header>
+<ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Grimoire
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
 
 <ion-content>
+
+    <ion-row class="top-content">
+        <ion-col>
+          <a (click)="utilityService.navURL('/home')">Home</a> > Project
+        </ion-col>
+      </ion-row>
 
 
 
@@ -107,11 +90,6 @@
             <ion-select-option value="api">api</ion-select-option>
           </ion-select>
         </ion-item>
-
-
-
-
-
       </ion-col>
 
     </ion-row> -->
@@ -179,7 +157,7 @@
       <ion-col *ngFor="let grim of grims;let i = index" size=3>
 
 
-        <ion-card style="width: 100%">
+        <ion-card>
           <ion-card-header text-center>
             <ion-card-title>
               {{grim["name"]}}
@@ -192,98 +170,79 @@
 
           <ion-card-content>
 
-            <ion-list>
-              <ion-item *ngFor="let spell of grim['spells'];let s = index">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>
-                      {{spell["spell_type"]}} - {{spell["spell_name"]}}
-                    </ion-card-title>
-                    <ion-card-subtitle>
-                      {{spell["spell_info"]}}
-                    </ion-card-subtitle>
-                  </ion-card-header>
+            <ion-card *ngFor="let spell of grim['spells'];let s = index">
+              <ion-card-header text-center>
+                <ion-card-title>
+                  {{spell["spell_type"]}} - {{spell["spell_name"]}}
+                </ion-card-title>
+                <ion-card-subtitle>
+                  {{spell["spell_info"]}}
+                </ion-card-subtitle>
+              </ion-card-header>
 
-                  <!-- will need to work out how we want to accept inputs-->
-                  <ion-card-content *ngIf="s == 0" text-center>
-                    Spell inputs:
-                    <ion-list>
-                      <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
-                        <ion-label>
-                          <!-- <h2>{{sim["input_name"]}}</h2> -->
-                          <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
-                          <!-- We will want to make this a component and just add to that? --->
+              <!-- will need to work out how we want to accept inputs-->
+              <ion-card-content *ngIf="s == 0" text-center>
+                Spell inputs:
+                <ion-list>
+                  <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
+                    <!-- <h2>{{sim["input_name"]}}</h2> -->
+                    <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
+                    <!-- We will want to make this a component and just add to that? --->
 
-                          <!-- If mana -->
-                          <div *ngIf="sim['takesMana']">
-                            <h2>Mana source</h2>
-                            {{sim["input_name"]}} - {{sim["info"]}}
+                    <!-- If mana -->
+                    <div *ngIf="sim['takesMana']">
+                      <h2>Mana source</h2>
+                      {{sim["input_name"]}} - {{sim["info"]}}
 
-                            <!-- We want a drop down for all mana sources by type?-->
-                            <div *ngIf="sim['takesCSV']">
+                      <!-- We want a drop down for all mana sources by type?-->
+                      <div *ngIf="sim['takesCSV']">
 
 
-                              <ion-label>CSV Name</ion-label>
-                              <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]" value="{{current_source['file_name']}}">
-                                </ion-input>
+                        <ion-label>CSV Name</ion-label>
+                        <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"
+                          value="{{current_source['file_name']}}">
+                        </ion-input>
 
-                            </div>
+                      </div>
 
-                            <div *ngIf="sim['takesDB']">
-
-
-                            </div>
+                      <div *ngIf="sim['takesDB']">
 
 
-                            <div *ngIf="sim['takesAPI']">
+                      </div>
 
+                      <div *ngIf="sim['takesAPI']">
 
-                            </div>
+                      </div>
+                    </div>
 
-                          </div>
+                    <!-- If takes csv cols -->
+                    <div *ngIf="sim['takesCSVCol']">
 
-                          <!-- If takes csv cols -->
-                          <div *ngIf="sim['takesCSVCol']">
+                      {{sim["input_name"]}} - {{sim["info"]}}
 
-                            {{sim["input_name"]}} - {{sim["info"]}}
+                      <!-- We want a drop down for all mana sources by type?-->
+                      <ion-label>Column Input</ion-label>
 
-                            <!-- We want a drop down for all mana sources by type?-->
-                            <ion-label>Column Input</ion-label>
+                      <ion-select [(ngModel)]="spell_tomb[sim['input_name']]" okText="Okay" cancelText="Dismiss">
+                        <ion-select-option *ngFor="let col of current_source['cols']" value="{{col}}">{{col}}
+                        </ion-select-option>
+                      </ion-select>
+                      <!-- <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input> -->
 
-                            <ion-select [(ngModel)]="spell_tomb[sim['input_name']]" okText="Okay" cancelText="Dismiss">
-                              <ion-select-option *ngFor="let col of current_source['cols']" value="{{col}}">{{col}}
-                              </ion-select-option>
-                            </ion-select>
-                            <!-- <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input> -->
+                    </div>
 
+                  </ion-item>
 
-
-
-
-                          </div>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
 
 
 
-
-
-
-
-
-                        </ion-label>
-
-                      </ion-item>
-
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
-
-              </ion-item>
-
-            </ion-list>
-
-
-
-            <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
+            <div text-center>
+                <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
+            </div>
+            
           </ion-card-content>
         </ion-card>
 
@@ -291,31 +250,16 @@
 
     </ion-row>
 
-    <ion-row *ngIf="showResults">
-      <h1 text-center>Results</h1>
-      <ion-col>
-        <ion-list>
-          <ion-item>
-            Results object: {{results}}
-          </ion-item>
 
-          <!-- <ion-item>
-            Mana columns
-            {{mana["cols"]}}
-          </ion-item> -->
-        </ion-list>
-
-      </ion-col>
-    </ion-row>
   </ion-grid>
 
 
 
   <ion-grid>
-      <h1 text-center>Completed Spells</h1>
-      <ion-row>
-        <ion-col>
-          <div *ngIf="showCasts">
+    <h1 text-center>Completed Spells</h1>
+    <ion-row>
+      <ion-col>
+        <div *ngIf="showCasts">
           <table id="cast_table" datatable [dtOptions]="dtOptions" class="row-border hover">
             <thead>
               <tr>
@@ -328,19 +272,21 @@
             </thead>
             <tbody>
               <tr *ngFor="let cast of casts; let i = index">
-                  <td>{{cast["grim_name"]}}</td>
-                  <td>{{cast["grim_value"]}}</td>
-                  <td>{{cast["mana_source"]}}</td>
-                  <td>{{cast["timestamp"]}}</td>
-                  <td><ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button></td>
+                <td>{{cast["grim_name"]}}</td>
+                <td>{{cast["grim_value"]}}</td>
+                <td>{{cast["mana_source"]}}</td>
+                <td>{{cast["timestamp"]}}</td>
+                <td>
+                  <ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
-        </ion-col>
-      </ion-row>
-  
-    </ion-grid>
-  
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
 
 </ion-content>

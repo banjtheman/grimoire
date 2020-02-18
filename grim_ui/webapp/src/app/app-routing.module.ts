@@ -16,6 +16,10 @@ const routes: Routes = [
     path: 'project-mana',
     loadChildren: () => import('./project-mana/project-mana.module').then( m => m.ProjectManaPageModule)
   },
+  {
+    path: 'view-cast',
+    loadChildren: () => import('./view-cast/view-cast.module').then( m => m.ViewCastPageModule)
+  },
 ];
 
 @NgModule({

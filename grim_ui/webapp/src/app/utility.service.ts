@@ -36,4 +36,12 @@ export class UtilityService {
   async dismissLoading() {
     this.loadingCtrl.dismiss()
   }
+
+  keys(obj) {
+    return Object.keys(obj); // good old javascript on the rescue
+  }
+  
+  values(obj) {
+    return Object.values(obj); // good old javascript on the rescue
+  }
 }

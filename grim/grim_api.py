@@ -123,7 +123,7 @@ def delete_project():
         r.delete("project_"+proj_name)
         for key in r.scan_iter("mana_"+proj_name+"*"):
             r.delete(key)
-        for key in r.scan_iter("casts_"+proj_name+"*"):
+        for key in r.scan_iter("cast_"+proj_name+"*"):
             r.delete(key)            
         jsonResp["status"] = "done"
     except Exception as e:

@@ -15,6 +15,7 @@ from flask import jsonify
 import grim
 import redis
 from datetime import datetime
+import shutil
 
 
 #gunicorn --bind 0.0.0.0:9000 --timeout 600 --workers=1 --reload wsgi &
@@ -110,7 +111,27 @@ def get_project_mana():
     
     return jsonify(jsonResp)
 
+@application.route("/delete_project", methods=["GET", "DELETE"])
+def delete_project():
+    proj_name = request.args.get("project_name")
+    logging.info("Project name is: " + proj_name)
+    #obvi this can be bad.... but its your system so...
+    dirName = "projects/"+proj_name
+    jsonResp = {}
+    try:
+        shutil.rmtree(dirName)
+        r.delete("project_"+proj_name)
+        for key in r.scan_iter("mana_"+proj_name+"*"):
+            r.delete(key)
+        for key in r.scan_iter("cast_"+proj_name+"*"):
+            r.delete(key)            
+        jsonResp["status"] = "done"
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "failed to remove project"
 
+    return jsonify(jsonResp)
 
 #have api just call grim.py
 @application.route("/create_project", methods=["GET", "POST"])

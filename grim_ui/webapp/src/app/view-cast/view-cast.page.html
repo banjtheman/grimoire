@@ -1,0 +1,107 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Grimoire
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+
+    <ion-row class="top-content">
+        <ion-col>
+          <a (click)="utilityService.navURL('/home')">Home</a> > <a (click)="utilityService.navURL('/project-mana')">Project</a> > Cast
+        </ion-col>
+      </ion-row>
+
+
+
+  <h1 text-center>{{magicService["Data"]["curr_cast"]["grim_name"]}}</h1>
+  <h2 text-center>{{magicService["Data"]["curr_cast"]["grim_value"]}}</h2>
+  <p text-center>{{magicService["Data"]["curr_cast"]["mana_source"]}} - {{magicService["Data"]["curr_cast"]["timestamp"]}}</p>
+
+
+  <h1 text-center>Export as App</h1>
+  <ion-row>
+    <ion-col size=4>
+        <ion-button shape="round" color="primary" expand="full">
+            <b>Export to Docker Image</b>
+          </ion-button>
+    </ion-col>
+    <ion-col size=4>
+        <ion-button shape="round" color="primary" expand="full">
+            <b>Export to Flask API</b>
+          </ion-button>
+    </ion-col>
+    <ion-col size=4>
+        <ion-button shape="round" color="primary" expand="full">
+            <b>Export to Jupyter Notebook</b>
+          </ion-button>
+    </ion-col>
+  </ion-row>
+
+
+
+  <h1 text-center>Spells</h1>
+  <ion-grid>
+    <ion-row>
+      <ion-col size=12 *ngFor="let spell of magicService['Data']['curr_cast']['spells'];let i = index"> 
+        <ion-card>
+          <ion-card-header text-center>
+            <ion-card-title>
+                {{spell["spell_name"]}} - {{spell["spell_type"]}}
+            </ion-card-title>
+            <ion-card-subtitle>
+                {{spell["spell_info"]}}
+            </ion-card-subtitle>
+
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="i == 0">
+
+            <h2>Spell inputs</h2>
+
+            <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cast of utilityService.keys(spell['spell_inputs'])">
+                      <td>{{cast}}</td>
+                      <td>{{spell['spell_inputs'][cast]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+            
+
+
+              <h2>Spell Outputs</h2>
+
+              <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                  <thead>
+                    <tr>
+                      <th>Key</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cast of utilityService.keys(spell['spell_output'])">
+                        <td>{{cast}}</td>
+                        <td>{{spell['spell_output'][cast]}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+          </ion-card-content>
+        </ion-card>
+        
+
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -42,12 +42,8 @@ export class HomePage {
 
   constructor(public magicService: MagicService , public navCtrl: NavController, private http: HttpClient, private file_writer: File, public modalController: ModalController, public loadingCtrl: LoadingController, public alertController: AlertController, public utilityService: UtilityService) {
 
-
-
     this.healthCheck()
-    this.get_grims()
     this.getProjects()
-
   }
 
 
@@ -80,6 +76,61 @@ export class HomePage {
 
 
   }
+  async deleteProjectAlertConfirm(project) {
+    const alert = await this.alertController.create({
+      header: 'Are you sure you want to delete Project?',
+      animated: true,
+      cssClass: "alertbox",
+      mode: "ios",
+      message: project["name"] + " will be deleted!!!",
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            console.log('Confirm Okay');
+            this.deleteProject(project)
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  deleteProject(project) {
+    console.log("delete project")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/delete_project?project_name="+project["name"]
+
+
+
+    this.http.delete(url, { headers: headers }).toPromise()
+    .then((data) => { // Success
+      console.log(data)
+      this.utilityService.presentModelAlert("Project Deleted")
+      this.getProjects()
+
+    }, (err) => {
+      console.log("ok we should back out");
+      console.log(err);
+      this.utilityService.presentModelAlert("Error try again")
+    })
+
+
+
+  }
 
   async newProject() {
     console.log('New Project clicked');
@@ -92,14 +143,11 @@ export class HomePage {
     })
 
     return await modal.present();
-
-
-
   }
-
 
   viewProject(project) {
     console.log("going to project page")
+    this.magicService.isBlank = false
     this.magicService["Data"]["curr_project"] = project
     this.navCtrl.navigateForward("/project-mana")
     
@@ -143,65 +191,6 @@ export class HomePage {
   }
 
 
-
-  get_grims() {
-    console.log("getting grims")
-
-    let headers = new HttpHeaders({
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    });
-
-    var url = this.api_url + "/get_grims"
-
-
-
-    this.http.get(url, { headers: headers }).toPromise()
-    .then((data) => { // Success
-      
-      this.grims = data["grims"]
-      console.log(this.grims)
-
-    }, (err) => {
-      console.log("ok we should back out");
-      console.log(err);
-      this.utilityService.presentModelAlert("Error try again")
-    })
-
-
-
-  }
-
-
-  createProject() {
-    console.log("create project")
-
-    let headers = new HttpHeaders({
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    });
-
-    var url = this.api_url + "/create_project?project_name="+this.projectName
-
-
-
-    this.http.get(url, { headers: headers }).toPromise()
-    .then((data) => { // Success
-      console.log(data)
-      //this.health = data["healthy"]
-      this.getProjects()
-
-    }, (err) => {
-      console.log("ok we should back out");
-      console.log(err);
-      this.utilityService.presentModelAlert("Error try again")
-    })
-
-
-
-  }
-
-
   addManaSource() {
     console.log("add mana source")
 
@@ -241,151 +230,5 @@ export class HomePage {
   }
 
 
-  upload() {
-
-
-
-    let files = this.getFiles();
-    
-    console.log(files);
-
-    console.log(files[0].type)
-    if (files[0].type != "text/csv") {
-      this.presentAlert()
-      return;
-    }
-
-    let formData = new FormData();
-    formData.append('somekey', 'some value') // Add any other data you want to send
-
-    files.forEach((file) => {
-      formData.append('file_data', file.rawFile, file.name)
-    });
-
-    console.log(formData)
-
-    // POST formData to Server
-    let headers = new HttpHeaders({
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    });
-
-
-
-    var url = this.api_url + "/add_csv_mana_source?project_name="+this.projectName
-    console.log("calling this url: " + url);
-
-    this.http.post(url, formData, { headers: headers }).toPromise()
-      .then((data) => { // Success
-        console.log(data)
-        this.mana = data
-        // this.file_name = data["file_name"]
-
-        // this.modalController.dismiss({
-        //   'file_upload': this.file_upload,
-        //   'file_name': this.file_name,
-        // });
-
-      }, (err) => {
-        console.log("ok we should back out");
-        console.log(err);
-      })
-
-
-
-  }
-
-  clearQueue(){
-    if (this.uploader.queue.length >= 1){
-      this.uploader.queue[0].remove()
-    }
-    
-  }
-
-  set_pipeline(val){
-    this.pipeline = val
-  }
-
-  cast_grim(grimID){
-    console.log("Going to cast grimID: "+grimID)
-    console.dir(this.grims[grimID])
-    console.log("Got this spell tomb")
-    console.dir(this.spell_tomb)
-
-    //We want to update grim with the new spell tomb
-    let spells = this.grims[grimID]
-
-    //update the first spell inputs with new data
-    spells["spells"][0]["spell_inputs"] = this.spell_tomb
-
-
-    console.log("Here is updated spell tomb")
-    console.dir(spells)
-
-    //Send post request with spells to backend
-        // POST formData to Server
-        let headers = new HttpHeaders({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        });
-    
-    
-    
-        var url = this.api_url + "/cast_grim?project_name="+this.projectName
-        console.log("calling this url: " + url);
-    
-        this.http.post(url, spells, { headers: headers }).toPromise()
-          .then((data) => { // Success
-            console.log(data)
-            this.mana = data
-            // this.file_name = data["file_name"]
-    
-            // this.modalController.dismiss({
-            //   'file_upload': this.file_upload,
-            //   'file_name': this.file_name,
-            // });
-    
-          }, (err) => {
-            console.log("ok we should back out");
-            console.log(err);
-          })
-
-
-
-
-    
-  }
-
-
-
-  getFiles(): FileLikeObject[] {
-    
-    return this.uploader.queue.map((fileItem) => {
-      console.log(fileItem)
-      return fileItem.file;
-    });
-  }
-
-  fileOverBase(ev): void {
-    this.hasBaseDropZoneOver = ev;
-  }
-
-  reorderFiles(reorderEvent: CustomEvent): void {
-    let element = this.uploader.queue.splice(reorderEvent.detail.from, 1)[0];
-    this.uploader.queue.splice(reorderEvent.detail.to, 0, element);
-  }
-
-  dismiss() {
-    this.modalController.dismiss({
-      'dismissed': true
-    });
-  }
-
-
-  submitCSV() {
-    console.log("uploading file")
-    this.upload()
-    console.log("upload finished")
-  }
 
 }

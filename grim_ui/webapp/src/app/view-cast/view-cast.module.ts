@@ -4,13 +4,10 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ProjectManaPageRoutingModule } from './project-mana-routing.module';
+import { ViewCastPageRoutingModule } from './view-cast-routing.module';
 
-import { ProjectManaPage } from './project-mana.page';
-import { FileUploadModule } from 'ng2-file-upload';
+import { ViewCastPage } from './view-cast.page';
 import { DataTablesModule } from 'angular-datatables';
-
-
 
 @NgModule({
   imports: [
@@ -18,9 +15,8 @@ import { DataTablesModule } from 'angular-datatables';
     FormsModule,
     IonicModule,
     DataTablesModule,
-    FileUploadModule,
-    ProjectManaPageRoutingModule
+    ViewCastPageRoutingModule
   ],
-  declarations: [ProjectManaPage]
+  declarations: [ViewCastPage]
 })
-export class ProjectManaPageModule {}
+export class ViewCastPageModule {}

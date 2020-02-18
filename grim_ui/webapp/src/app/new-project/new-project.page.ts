@@ -4,6 +4,8 @@ import { NavParams } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { environment } from '../../environments/environment';
+import { UtilityService } from '../utility.service'
+
 
 @Component({
   selector: 'app-new-project',
@@ -15,7 +17,7 @@ export class NewProjectPage implements OnInit {
   public desc: any;
   public name: any;
 
-  constructor(private navParams: NavParams, private http: HttpClient, private modalCtrl: ModalController) { }
+  constructor(private navParams: NavParams, private http: HttpClient, private modalCtrl: ModalController,public utilityService: UtilityService) { }
 
   ngOnInit() {
   }
@@ -63,6 +65,11 @@ export class NewProjectPage implements OnInit {
     this.http.post(url, postData, { headers: headers }).toPromise()
       .then((data) => { // Success
         console.log(data);
+        if (data["error"]) {
+          console.log("Graceful error")
+          this.utilityService.presentModelAlert(data["error"])
+          return
+        }
         this.modalCtrl.dismiss();
 
       }, (err) => {

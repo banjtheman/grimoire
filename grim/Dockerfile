@@ -13,9 +13,13 @@ RUN bash /tmp/docker_environment/custom.sh
 # Copy Files
 COPY app.py /home/
 COPY wsgi.py /home/
+COPY grim*.py /home/
 COPY startup.sh /home/
 
-EXPOSE 9005
+ADD spells /home/spells
+
+
+EXPOSE 9000
 
 WORKDIR /home/
 

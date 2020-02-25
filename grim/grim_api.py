@@ -469,6 +469,35 @@ def cast_grim():
 
 
 
+@application.route("/export_flask", methods=["GET", "POST"])
+def export_flask():
+    print("Exporting to flask")
+    jsonResp = {}
+    data = request.data
+    print("File data is...")
+    print(data)
+
+    #make new directory
+
+    #cp app_template.py to new dir
+    #cp run.sh to new dir
+
+    # replace text in app_template
+    # replace text in run.sh
+
+    # make spells dir in new_dir
+
+    # copy the spells needed to new dir
+
+    # merge it ( zip up new dir)
+
+    # purge it (remove tmp dir)
+
+    # ship it (provide dl link )
+    jsonResp["status"] = "got it"
+    return jsonify(jsonResp)
+
+
 @application.route("/get_grims")
 def get_grims():
     """

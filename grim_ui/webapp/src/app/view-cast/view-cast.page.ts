@@ -18,6 +18,7 @@ export class ViewCastPage implements OnInit {
 
 
   dtOptions: DataTables.Settings = {};
+  public project: any;
   public api_url = environment.api_url
 
 
@@ -29,6 +30,8 @@ export class ViewCastPage implements OnInit {
       console.log("return")
       window.location.href = "/";
     }
+
+    this.project = this.magicService["Data"]["curr_project"]
 
   }
 
@@ -45,7 +48,7 @@ export class ViewCastPage implements OnInit {
 
 
 
-    var url = this.api_url + "/export_flask"
+    var url = this.api_url + "/export_flask?project_name=" + this.project["name"]
     console.log("calling this url: " + url);
 
     this.http.post(url, this.magicService['Data']['curr_cast'], { headers: headers }).toPromise()

@@ -477,24 +477,43 @@ def export_flask():
     print("File data is...")
     print(data)
 
+    proj_name = request.args.get("project_name")
+    print("Project name is: " + proj_name)
+
     #make new directory
+    flask_dir = "projects/"+proj_name+"/exports/flask/"
+    cmd = "mkdir -p "+flask_dir
+    os.system(cmd)
 
     #cp app_template.py to new dir
     #cp run.sh to new dir
+    cp_command = "cp exports/app_template.py "+flask_dir
+    os.system(cp_command)
+
+    cp_command = "cp exports/run.sh "+flask_dir
+    os.system(cp_command)
 
     # replace text in app_template
     # replace text in run.sh
 
     # make spells dir in new_dir
+    cmd = "mkdir -p "+flask_dir+"spells"
+    os.system(cmd)
 
     # copy the spells needed to new dir
+    grimoire = json.loads(data.decode('utf-8'))
+
+    for spell in grimoire["spells"]:
+        spell_path = "spells/"+spell["spell_type"]+"/"+spell["spell_name"]+".py"
+        cp_command = "cp "+spell_path+" "+flask_dir+"spells"
+        os.system(cp_command)
 
     # merge it ( zip up new dir)
-
-    # purge it (remove tmp dir)
+    #or maybe just tell them? link we will need nginx server for this...
 
     # ship it (provide dl link )
     jsonResp["status"] = "got it"
+    jsonResp["location"] = flask_dir
     return jsonify(jsonResp)
 
 

@@ -476,6 +476,9 @@ def export_flask():
     data = request.data
     print("File data is...")
     print(data)
+    grimoire = json.loads(data.decode('utf-8'))
+
+
 
     proj_name = request.args.get("project_name")
     print("Project name is: " + proj_name)
@@ -487,25 +490,87 @@ def export_flask():
 
     #cp app_template.py to new dir
     #cp run.sh to new dir
-    cp_command = "cp exports/app_template.py "+flask_dir
+    cp_command = "cp exports/app_template.py "+flask_dir+"app.py"
     os.system(cp_command)
 
     cp_command = "cp exports/run.sh "+flask_dir
     os.system(cp_command)
 
+    #write the grim json to flask path
+    cp_command = "cp "+grimoire["spell_path"]+" "+flask_dir+"grim.json"
+    os.system(cp_command)
+
+    with open(flask_dir+"completed_cast.json", 'w') as outfile:
+        json.dump(grimoire, outfile)
+
     # replace text in app_template
+
+    #import spells
+    # from spells.SPELL_TYPE.SPELL_NAME import spell as SPELL_NAME
+    # REGISTERED_SPELLS = dict ( SPELL_NAME=SPELL_NAME,)
+
+    import_spell_text = ""
+    spell_dict_text = "REGISTERED_SPELLS = dict("
+    for spell in grimoire["spells"]:
+        import_spell_text += "from spells."+spell["spell_type"]+"."+spell["spell_name"]+" import spell as "+spell["spell_name"]+"\n"
+        spell_dict_text += spell["spell_name"]+"="+spell["spell_name"]+","
+    
+    spell_dict_text += ")"
+    spell_dict_text = spell_dict_text.replace(",)",")")
+
+    full_spell_insert_text = import_spell_text+spell_dict_text
+    print(full_spell_insert_text)
+
+    lines = []
+    with open(flask_dir+"app.py") as infile:
+        for line in infile:
+            if "####### SPELL_INSERTS #######" in line:
+                print("found replace")
+                line = line.replace("####### SPELL_INSERTS #######", full_spell_insert_text)
+            lines.append(line)
+    with open(flask_dir+"app.py", 'w') as outfile:
+        for line in lines:
+            outfile.write(line)
+
     # replace text in run.sh
+    #the curl string should just be spell inputs of first spell
+
+    curl_string= "curl localhost:5000/cast"
+    input_counter=0
+
+    for spell_input in grimoire["spells"][0]["spell_inputs"]:
+        if input_counter == 0:
+            curl_string += "?"+spell_input+"="+grimoire["spells"][0]["spell_inputs"][spell_input]
+        else:
+            curl_string += "&"+spell_input+"="+grimoire["spells"][0]["spell_inputs"][spell_input]
+        input_counter += 1
+
+
+    lines = []
+    with open(flask_dir+"run.sh") as infile:
+        for line in infile:
+            line = line.replace("curl localhost:5000GRIM_CURL_STRING", curl_string)
+            lines.append(line)
+    with open(flask_dir+"run.sh", 'w') as outfile:
+        for line in lines:
+            outfile.write(line)   
+
 
     # make spells dir in new_dir
     cmd = "mkdir -p "+flask_dir+"spells"
     os.system(cmd)
 
-    # copy the spells needed to new dir
-    grimoire = json.loads(data.decode('utf-8'))
+    #touch __init__.py
+    cmd = "touch "+flask_dir+"spells/__init__.py"
+    os.system(cmd)
 
+    # copy the spells needed to new dir
     for spell in grimoire["spells"]:
+        #need to make dir for spell type
+        cmd = "mkdir -p "+flask_dir+"spells/"+spell["spell_type"]+"/"
+        os.system(cmd)
         spell_path = "spells/"+spell["spell_type"]+"/"+spell["spell_name"]+".py"
-        cp_command = "cp "+spell_path+" "+flask_dir+"spells"
+        cp_command = "cp "+spell_path+" "+flask_dir+"spells/"+spell["spell_type"]+"/"
         os.system(cp_command)
 
     # merge it ( zip up new dir)

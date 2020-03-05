@@ -30,9 +30,9 @@ def health():
 def cast():
     #we check the spell inputs for first spell, and make thoose required parms??
 
-    #We will have a placholder like GRIM_NAME, and replace it with actual value
+    #or just dump it to grim.json, doesnt matter what its called
     #could also just pass in so can run any grim, but we dont want to import every spell
-    with open(GRIM_NAME) as json_file:
+    with open("grim.json") as json_file:
         grim = json.load(json_file)
         
 
@@ -42,7 +42,7 @@ def cast():
 
     for spell_input in grim["spells"][0]["spell_inputs"].keys():
         first_spell["spell_inputs"][spell_input] = request.args.get(spell_input)
-        print("Got " + str(spell_input) + ": "+first_spell["spell_inputs"][spell_input] )
+        print("Got " + str(spell_input) + ": "+str(first_spell["spell_inputs"][spell_input]) )
 
     spell_tomb = {}
 

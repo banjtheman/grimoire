@@ -92,6 +92,7 @@ def cast(cast_path,mana_source):
             spell_tomb_formatted["grim_value"] = grim["value"]
             spell_tomb_formatted["mana_source"] = mana_source
             spell_tomb_formatted["spells"] = []
+            spell_tomb_formatted["spell_path"] = grim["spell_path"]
 
             for spell in grim_pipeline:
                 logging.debug(spell)

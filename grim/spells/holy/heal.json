@@ -1,0 +1,33 @@
+{
+      "spell_type": "holy",
+      "spell_name": "heal",
+      "has_user_spell_inputs": true,
+      "spell_info": "converts raw data to mana",
+      "spell_inputs_metadata": [
+        {
+          "takesMana": true,
+          "input_name": "mana_location",
+          "takesCSV": true,
+          "takesAPI": false,
+          "takesDB": false,
+          "takesCSVCol": false,
+          "info": "CSV path",
+	  "example": "test.csv"
+        },
+        {
+          "takesMana": false,
+          "input_name": "target_string",
+          "takesCSV": false,
+          "takesAPI": false,
+          "takesDB": false,
+          "takesCSVCol": true,
+          "info": "Target Column",
+	  "example": "value"
+        }
+      ],
+      "spell_inputs": {
+        "mana_location": "test.csv",
+        "target_string": "value"
+      },
+      "spell_output": "healed_data"
+    }

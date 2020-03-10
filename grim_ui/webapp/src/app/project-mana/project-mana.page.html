@@ -1,84 +1,98 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-title>
-        Grimoire
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Grimoire
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
 
-    <ion-row class="top-content">
-        <ion-col>
-          <a (click)="utilityService.navURL('/home')">Home</a> > Project
+  <ion-row class="top-content">
+    <ion-col>
+      <a (click)="utilityService.navURL('/home')">Home</a> > Project
+    </ion-col>
+  </ion-row>
+
+
+  <ion-segment (ionChange)="segmentChanged($event)" value="{{spell_mode}}" [(ngModel)]="spell_mode">
+    <ion-segment-button value="cast">
+      <ion-label>Cast Spells</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="conjure">
+      <ion-label>Conjure Spells</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+
+
+
+  <!-- Cast -->
+  <div *ngIf="spell_mode=='cast'">
+
+    <ion-grid>
+
+
+      <h1 text-center>Mana sources</h1>
+      <ion-row>
+        <ion-col size=2 *ngFor="let source of mana_sources">
+          <ion-card (click)="set_source(source)">
+            <ion-card-header>
+              <ion-title text-center>
+                <h1>{{source["file_name"]}}</h1>
+              </ion-title>
+            </ion-card-header>
+            <ion-card-content text-center>
+              Data Source
+            </ion-card-content>
+          </ion-card>
         </ion-col>
+
       </ion-row>
 
 
 
-  <ion-grid>
+      <h2 text-center>Add new Source</h2>
+      <ion-row>
+        <ion-col offset=3 size=2>
+          <ion-card (click)="change_mana_type('csv')">
+            <ion-card-header>
+              <ion-title text-center>
+                <h1>CSV</h1>
+              </ion-title>
+            </ion-card-header>
+            <ion-card-content text-center>
+              Upload a CSV file
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size=2>
+          <ion-card (click)="change_mana_type('db')">
+            <ion-card-header>
+              <ion-title text-center>
+                <h1>Database</h1>
+              </ion-title>
+            </ion-card-header>
+            <ion-card-content text-center>
+              Pull from a Database
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size=2>
+          <ion-card (click)="change_mana_type('api')">
+            <ion-card-header>
+              <ion-title text-center>
+                <h1>API</h1>
+              </ion-title>
+            </ion-card-header>
+            <ion-card-content text-center>
+              Hit api endpoint
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
 
-
-    <h1 text-center>Mana sources</h1>
-    <ion-row>
-      <ion-col size=2 *ngFor="let source of mana_sources">
-        <ion-card (click)="set_source(source)">
-          <ion-card-header>
-            <ion-title text-center>
-              <h1>{{source["file_name"]}}</h1>
-            </ion-title>
-          </ion-card-header>
-          <ion-card-content text-center>
-            Data Source
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-    </ion-row>
-
-
-
-    <h2 text-center>Add new Source</h2>
-    <ion-row>
-      <ion-col offset=3 size=2>
-        <ion-card (click)="change_mana_type('csv')">
-          <ion-card-header>
-            <ion-title text-center>
-              <h1>CSV</h1>
-            </ion-title>
-          </ion-card-header>
-          <ion-card-content text-center>
-            Upload a CSV file
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size=2>
-        <ion-card (click)="change_mana_type('db')">
-          <ion-card-header>
-            <ion-title text-center>
-              <h1>Database</h1>
-            </ion-title>
-          </ion-card-header>
-          <ion-card-content text-center>
-            Pull from a Database
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size=2>
-        <ion-card (click)="change_mana_type('api')">
-          <ion-card-header>
-            <ion-title text-center>
-              <h1>API</h1>
-            </ion-title>
-          </ion-card-header>
-          <ion-card-content text-center>
-            Hit api endpoint
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-    </ion-row>
-    <!-- <ion-row>
+      </ion-row>
+      <!-- <ion-row>
       <ion-col size=3>
 
         <ion-item>
@@ -93,200 +107,402 @@
       </ion-col>
 
     </ion-row> -->
-    <br>
-    <br>
-    <ion-row>
-      <ion-col offset=4 size=3 *ngIf="mana_type == 'csv';">
+      <br>
+      <br>
+      <ion-row>
+        <ion-col offset=4 size=3 *ngIf="mana_type == 'csv';">
 
-        <ion-list>
-          <ion-item>
-            <ion-label>File Upload</ion-label>
-            <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
+          <ion-list>
+            <ion-item>
+              <ion-label>File Upload</ion-label>
+              <!-- <ion-input type="text" disabled [(ngModel)]="file_upload" value="HLB-CAS-sample-data.csv" placeholder="HLB-CAS-sample-data.csv">
                   </ion-input> -->
-            <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
+              <input type="file" ng2FileSelect [uploader]="uploader" (click)="clearQueue()" />
 
-          </ion-item>
-
-
-          <ion-item>
-
-            <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
-              <b>Upload CSV</b>
-            </ion-button>
-          </ion-item>
-
-        </ion-list>
+            </ion-item>
 
 
+            <ion-item>
 
+              <ion-button expand="full" color="primary" shape="round" (click)="submitCSV()">
+                <b>Upload CSV</b>
+              </ion-button>
+            </ion-item>
 
-      </ion-col>
+          </ion-list>
 
 
 
 
-
-
-    </ion-row>
-  </ion-grid>
+        </ion-col>
 
 
 
 
 
 
+      </ion-row>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  <ion-grid *ngIf="current_source">
-
-    <h1 text-center>Grimoires</h1>
-
+      <!-- <h2 text-center>Create new Grimoires</h2>
     <ion-row>
-      <ion-col *ngFor="let grim of grims;let i = index" size=3>
-
-
-        <ion-card>
-          <ion-card-header text-center>
-            <ion-card-title>
-              {{grim["name"]}}
-            </ion-card-title>
-            <ion-card-subtitle>
-              {{grim["value"]}}
-            </ion-card-subtitle>
-
+      <ion-col offset=3 size=3>
+        <ion-card (click)="change_mana_type('csv')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>Grimoire</h1>
+            </ion-title>
           </ion-card-header>
-
-          <ion-card-content>
-
-            <ion-card *ngFor="let spell of grim['spells'];let s = index">
-              <ion-card-header text-center>
-                <ion-card-title>
-                  {{spell["spell_type"]}} - {{spell["spell_name"]}}
-                </ion-card-title>
-                <ion-card-subtitle>
-                  {{spell["spell_info"]}}
-                </ion-card-subtitle>
-              </ion-card-header>
-
-              <!-- will need to work out how we want to accept inputs-->
-              <ion-card-content *ngIf="s == 0" text-center>
-                Spell inputs:
-                <ion-list>
-                  <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
-                    <!-- <h2>{{sim["input_name"]}}</h2> -->
-                    <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
-                    <!-- We will want to make this a component and just add to that? --->
-
-                    <!-- If mana -->
-                    <div *ngIf="sim['takesMana']">
-                      <h2>Mana source</h2>
-                      {{sim["input_name"]}} - {{sim["info"]}}
-
-                      <!-- We want a drop down for all mana sources by type?-->
-                      <div *ngIf="sim['takesCSV']">
-
-
-                        <ion-label>CSV Name</ion-label>
-                        <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"
-                          value="{{current_source['file_name']}}">
-                        </ion-input>
-
-                      </div>
-
-                      <div *ngIf="sim['takesDB']">
-
-
-                      </div>
-
-                      <div *ngIf="sim['takesAPI']">
-
-                      </div>
-                    </div>
-
-                    <!-- If takes csv cols -->
-                    <div *ngIf="sim['takesCSVCol']">
-
-                      {{sim["input_name"]}} - {{sim["info"]}}
-
-                      <!-- We want a drop down for all mana sources by type?-->
-                      <ion-label>Column Input</ion-label>
-
-                      <ion-select [(ngModel)]="spell_tomb[sim['input_name']]" okText="Okay" cancelText="Dismiss">
-                        <ion-select-option *ngFor="let col of current_source['cols']" value="{{col}}">{{col}}
-                        </ion-select-option>
-                      </ion-select>
-                      <!-- <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input> -->
-
-                    </div>
-
-                  </ion-item>
-
-                </ion-list>
-              </ion-card-content>
-            </ion-card>
-
-
-
-            <div text-center>
-                <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
-            </div>
-            
+          <ion-card-content text-center>
+            Collection of spells
           </ion-card-content>
         </ion-card>
-
+      </ion-col>
+      <ion-col size=3>
+        <ion-card (click)="change_mana_type('db')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>Spell</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Indiviudal spell
+          </ion-card-content>
+        </ion-card>
       </ion-col>
 
-    </ion-row>
+    </ion-row> -->
+    </ion-grid>
 
 
-  </ion-grid>
 
 
 
-  <ion-grid>
-    <h1 text-center>Completed Spells</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-grid *ngIf="current_source">
+
+      <h1 text-center>Grimoires</h1>
+
+      <ion-row>
+        <ion-col *ngFor="let grim of grims;let i = index" size=3>
+
+
+          <ion-card>
+            <ion-card-header text-center>
+              <ion-card-title>
+                {{grim["name"]}}
+              </ion-card-title>
+              <ion-card-subtitle>
+                {{grim["value"]}}
+              </ion-card-subtitle>
+
+            </ion-card-header>
+
+            <ion-card-content>
+
+              <ion-card *ngFor="let spell of grim['spells'];let s = index">
+                <ion-card-header text-center>
+                  <ion-card-title>
+                    {{spell["spell_type"]}} - {{spell["spell_name"]}}
+                  </ion-card-title>
+                  <ion-card-subtitle>
+                    {{spell["spell_info"]}}
+                  </ion-card-subtitle>
+                </ion-card-header>
+
+                <!-- will need to work out how we want to accept inputs-->
+                <ion-card-content *ngIf="s == 0" text-center>
+                  Spell inputs:
+                  <ion-list>
+                    <ion-item *ngFor="let sim of spell['spell_inputs_metadata']">
+                      <!-- <h2>{{sim["input_name"]}}</h2> -->
+                      <!--  Ok here is the tricky part, do we just add infinite condtions here??-->
+                      <!-- We will want to make this a component and just add to that? --->
+
+                      <!-- If mana -->
+                      <div *ngIf="sim['takesMana']">
+                        <h2>Mana source</h2>
+                        {{sim["input_name"]}} - {{sim["info"]}}
+
+                        <!-- We want a drop down for all mana sources by type?-->
+                        <div *ngIf="sim['takesCSV']">
+
+
+                          <ion-label>CSV Name</ion-label>
+                          <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"
+                            value="{{current_source['file_name']}}">
+                          </ion-input>
+
+                        </div>
+
+                        <div *ngIf="sim['takesDB']">
+
+
+                        </div>
+
+                        <div *ngIf="sim['takesAPI']">
+
+                        </div>
+                      </div>
+
+                      <!-- If takes csv cols -->
+                      <div *ngIf="sim['takesCSVCol']">
+
+                        {{sim["input_name"]}} - {{sim["info"]}}
+
+                        <!-- We want a drop down for all mana sources by type?-->
+                        <ion-label>Column Input</ion-label>
+
+                        <ion-select [(ngModel)]="spell_tomb[sim['input_name']]" okText="Okay" cancelText="Dismiss">
+                          <ion-select-option *ngFor="let col of current_source['cols']" value="{{col}}">{{col}}
+                          </ion-select-option>
+                        </ion-select>
+                        <!-- <ion-input type="text" [(ngModel)]="spell_tomb[sim['input_name']]"></ion-input> -->
+
+                      </div>
+
+                    </ion-item>
+
+                  </ion-list>
+                </ion-card-content>
+              </ion-card>
+
+
+
+              <div text-center>
+                <ion-button shape="round" (click)="cast_grim(i);">Cast Spells</ion-button>
+              </div>
+
+            </ion-card-content>
+          </ion-card>
+
+        </ion-col>
+
+      </ion-row>
+
+
+    </ion-grid>
+
+
+
+    <ion-grid>
+      <h1 text-center>Completed Spells</h1>
+      <ion-row>
+        <ion-col>
+          <div *ngIf="showCasts">
+            <table id="cast_table" datatable [dtOptions]="dtOptions" class="row-border hover">
+              <thead>
+                <tr>
+                  <th>Grimoire</th>
+                  <th>Purpose</th>
+                  <th>Mana Source</th>
+                  <th>Timestamp</th>
+                  <th>View Cast</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cast of casts; let i = index">
+                  <td>{{cast["grim_name"]}}</td>
+                  <td>{{cast["grim_value"]}}</td>
+                  <td>{{cast["mana_source"]}}</td>
+                  <td>{{cast["timestamp"]}}</td>
+                  <td>
+                    <ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+
+
+  </div>
+
+  <!-- Conjure -->
+
+  <div *ngIf="spell_mode=='conjure'">
+
+
+    <h2 text-center>Create new Grimoires</h2>
     <ion-row>
-      <ion-col>
-        <div *ngIf="showCasts">
-          <table id="cast_table" datatable [dtOptions]="dtOptions" class="row-border hover">
-            <thead>
-              <tr>
-                <th>Grimoire</th>
-                <th>Purpose</th>
-                <th>Mana Source</th>
-                <th>Timestamp</th>
-                <th>View Cast</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let cast of casts; let i = index">
-                <td>{{cast["grim_name"]}}</td>
-                <td>{{cast["grim_value"]}}</td>
-                <td>{{cast["mana_source"]}}</td>
-                <td>{{cast["timestamp"]}}</td>
-                <td>
-                  <ion-button shape="round" (click)="viewCast(cast);">View Cast</ion-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <ion-col offset=3 size=3>
+        <ion-card (click)="change_conjure_type('grim')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>Grimoire</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Collection of spells
+          </ion-card-content>
+        </ion-card>
       </ion-col>
+      <ion-col size=3>
+        <ion-card (click)="change_conjure_type('spell')">
+          <ion-card-header>
+            <ion-title text-center>
+              <h1>Spell</h1>
+            </ion-title>
+          </ion-card-header>
+          <ion-card-content text-center>
+            Indiviudal spell
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
     </ion-row>
 
-  </ion-grid>
+
+    <div *ngIf="conjure_type=='grim'">
+      <br>
+      <br>
+
+      <!-- Have a table of all spells, click plus button to add?-->
+
+      <ion-list text-center>
+        <ion-label>Grimoire Name:</ion-label>
+        <ion-item>
+          <ion-input type="text" placeholder="Name" [(ngModel)]="new_grim_name"></ion-input>
+        </ion-item>
+        <ion-label>Grimoire Description:</ion-label>
+        <ion-item>
+          <ion-input type="text" placeholder="Description" [(ngModel)]="new_grim_desc"></ion-input>
+        </ion-item>
+
+
+
+      </ion-list>
+
+      <ion-row>
+        <ion-col size=4 *ngFor="let spell of new_grim; let i = index">
+
+          <ion-card>
+            <ion-card-header text-center>
+              <ion-card-title>
+                {{spells_dict[spell]["spell_type"]}} - {{spells_dict[spell]["spell_name"]}}
+              </ion-card-title>
+              <ion-card-subtitle>
+                {{spells_dict[spell]["spell_info"]}}
+              </ion-card-subtitle>
+            </ion-card-header>
+
+            <!-- will need to work out how we want to accept inputs-->
+            <ion-card-content text-center>
+              <div *ngFor="let spell_input of spells_dict[spell]['spell_inputs_metadata'];">
+
+                <h2><b>Spell Input: {{spell_input["input_name"]}}</b></h2>
+                <table border=1 width="100%">
+                  <thead>
+                    <tr>
+                      <th>Input Info</th>
+                      <th>Example value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {{spell_input["info"]}}
+                      </td>
+                      <td>
+                        {{spell_input["example"]}}
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+        </ion-col>
+      </ion-row>
+
+      <ion-button expand="full" shape="round" (click)="createGrim();">Create Grimoire
+        </ion-button>
+
+
+
+      <table id="spell_table" datatable [dtOptions]="dtOptions" class="row-border hover">
+        <thead>
+          <tr>
+            <th>Spell Name</th>
+            <th>Spell Info</th>
+            <th>Spell Type</th>
+            <th>Has user inputs?</th>
+            <th>Spell Inputs</th>
+            <th>Spell Output</th>
+            <th>Add Spell</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let spell of spells; let i = index">
+            <td>{{spell["spell_name"]}}</td>
+            <td>{{spell["spell_info"]}}</td>
+            <td>{{spell["spell_type"]}}</td>
+            <td>{{spell["has_user_spell_inputs"]}}</td>
+            <td>
+
+              <div *ngFor="let spell_input of spell['spell_inputs_metadata'];">
+
+                <h3>Spell Input: {{spell_input["input_name"]}}</h3>
+                <h3>Input Info: {{spell_input["info"]}}</h3>
+                <h3>Example Value: {{spell_input["example"]}}</h3>
+                <ul>
+                  <li>takesMana: {{spell_input["takesMana"]}} </li>
+                  <li>takesCSV: {{spell_input["takesCSV"]}} </li>
+                  <li>takesAPI: {{spell_input["takesAPI"]}} </li>
+                  <li>takesDB: {{spell_input["takesDB"]}} </li>
+                </ul>
+
+              </div>
+
+
+
+            </td>
+            <td>{{spell["spell_output"]}}</td>
+            <td>
+
+              <ion-button *ngIf="inNewGrim(spell) == false" shape="round" (click)="addToGrim(spell);">Add to Grimoire
+              </ion-button>
+
+              <ion-button *ngIf="inNewGrim(spell) == true" shape="round" color="danger"
+                (click)="removeFromGrim(spell);">Remove from Grimoire</ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+
+    </div>
+
+
+    <div *ngIf="conjure_type=='spell'">
+
+
+
+    </div>
+
+
+
+  </div>
 
 
 </ion-content>

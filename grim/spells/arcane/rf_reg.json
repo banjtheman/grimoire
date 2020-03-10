@@ -1,0 +1,21 @@
+{
+      "spell_type": "arcane",
+      "spell_name": "rf_reg",
+      "has_user_spell_inputs": false,
+      "spell_info": "creates rf model from mana",
+      "spell_inputs_metadata": [ {
+          "takesMana": false,
+          "input_name": "healed_data",
+          "takesCSV": false,
+          "takesAPI": false,
+          "takesDB": false,
+          "takesCSVCol": false,
+          "info": "Output from heal spell",
+	  "example": "healed_data"
+      }
+      ],
+      "spell_inputs": {
+        "healed_data": "healed_data"
+      },
+      "spell_output": "model"
+    }

@@ -17,6 +17,7 @@ import redis
 from datetime import datetime
 import shutil
 
+import glob
 
 #gunicorn --bind 0.0.0.0:9000 --timeout 600 --workers=1 --reload wsgi &
 
@@ -350,6 +351,41 @@ def add_csv_mana_source():
     return jsonify(jsonResp)
 
 
+@application.route("/create_grim", methods=["GET", "POST"])
+def create_grim():
+    """
+    Purpose:
+        Create grim
+    Args/Requests:
+         data = metadata needed to create grim 
+    Return:
+        json object with result of create
+    """
+
+    jsonResp = {}
+    #HARDCODE projects dir
+
+    data = request.data
+    print("File data is...")
+    print(data)
+    try:
+        grimoire = json.loads(data.decode('utf-8'))
+        grim_path = "grimoire/"+grimoire["name"]+".json"
+        grimoire["spell_path"] = grim_path
+
+        #write the json to cast path
+        with open(grim_path, 'w') as outfile:
+            json.dump(grimoire, outfile)
+
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+        return jsonify(jsonResp)
+    
+    jsonResp["status"] = "got it"
+    jsonResp["grim_path"] = grim_path
+    return jsonify(jsonResp)
 
 @application.route("/cast_grim", methods=["GET", "POST"])
 def cast_grim():
@@ -615,6 +651,46 @@ def get_grims():
     jsonResp["grims"] = grim_array
 
     return jsonify(jsonResp)
+
+
+@application.route("/get_spells")
+def get_spells():
+    """
+    Purpose:
+        Get spell json files
+    Args/Requests:
+         N/A
+    Return:
+        array of spell objects
+    """	
+
+    spells_array = []
+    jsonResp = {}
+    #local grim file
+    #screw this just us glob to get all spell.json files in spell dir
+    try:
+        file_list = glob.glob("spells/**/*.json")
+        print("File list:")
+        print(file_list)
+        for spell_json in file_list:
+            with open(spell_json) as json_file:
+                spell_data = json.load(json_file)
+                spells_array.append(spell_data)
+
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+        return jsonResp
+    #return array
+
+    print("Spells array:")
+    print(spells_array)
+    
+    jsonResp["spells"] = spells_array
+
+    return jsonify(jsonResp)
+
 
 
 

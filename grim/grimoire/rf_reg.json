@@ -1,6 +1,7 @@
 {"name" : "simple_reg",
  "value": "find correlation with values given target",
  "spell_path" : "grimoire/rf_reg.json",
+ "video_path" : "videos/rf_reg.mp4",
 "spells" : [
 {
 	"spell_type" : "holy",

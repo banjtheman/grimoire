@@ -11,16 +11,11 @@ from sklearn.model_selection import GridSearchCV
 import sklearn.metrics
 import pickle
 import random
-import streamlit as st
-
-
-
-
 
 
 def spell(spell_inputs):
-  
-    print("rf_reg heal data")
+    healed_data = spell_inputs["healed_data"]
+    print("rf_reg")
 
     # Random hyper parms
     tuned = {}
@@ -43,12 +38,10 @@ def spell(spell_inputs):
         random_state=randInt,
     )
 
-    # train the model!!!!
-    #wait for key?
-    print("Heres model data")
-    healed_data = spell_inputs["healed_data"]
+    print(healed_data)
 
-    print(str(healed_data))
+
+    # train the model!!!!
     train_features = healed_data["train_features"]
     train_target = healed_data["train_target"]
     test_target = healed_data["test_target"]
@@ -62,7 +55,9 @@ def spell(spell_inputs):
     raw_data = healed_data["mana"]
 
 
+    logging.debug("Heres model data")
 
+    logging.debug(str(healed_data))
 
     logging.debug("Running training with these hyperparms: " + str(tuned))
 
@@ -116,10 +111,10 @@ def spell(spell_inputs):
         feature_importances, key=lambda x: x[1], reverse=True
     )  # print out the feature and importances
 
-    # [
-    #     print("Variable: {:20} Importance: {}".format(*pair))
-    #     for pair in feature_importances
-    # ]
+    [
+        print("Variable: {:20} Importance: {}".format(*pair))
+        for pair in feature_importances
+    ]
 
     predictions = rf.predict(featuresarr)
     true = target
@@ -138,17 +133,6 @@ def spell(spell_inputs):
     jsonOutput["RMSE"] = rmse
     jsonOutput["importances"] = importances
     jsonOutput["predictions"] = predictions.tolist()
+    print("new code")
 
-    if st.checkbox('Show rf_reg raw data'):
-        st.write(jsonOutput)
-    
-
-    st.markdown('**Predict with model**')
-    predict_feats = {}
-    for feat in feature_list:
-        predict_feats[feat] = st.number_input('Insert a value for '+feat)
-    
-    if len(predict_feats.keys()) == len(feature_list):
-        feats_df = pd.DataFrame(predict_feats, index=[0])
-        model_predictions = rf.predict(feats_df)
-        st.write("Predicted "+target_string+": "+str(model_predictions[0]))
+    return jsonOutput

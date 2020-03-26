@@ -387,6 +387,44 @@ def create_grim():
     jsonResp["grim_path"] = grim_path
     return jsonify(jsonResp)
 
+
+@application.route("/launch_grim", methods=["GET", "POST"])
+def launch_grim():
+    """
+    Purpose:
+        Launch grimoire
+    Args/Requests:
+         data = metadata needed to cast spell 
+    Return:
+        json object with result of cast
+    """
+    data = request.data
+    #hmm have streamlit run from start, and then have it just refresh
+    #instead of spawning new prorcces
+    grimoire = json.loads(data.decode('utf-8'))
+    print(grimoire["name"])
+
+    #run streamlit spell runner
+    #basicaly we want to refresh grim_st with the grim path
+
+    #we are just going to dump grim to grim_st.json
+    with open("grim_st.json", 'w') as outfile:
+        json.dump(grimoire, outfile)
+
+    # cmd = "streamlit run grim_st.py "+grimoire["spell_path"]+" &"
+    # os.system(cmd)
+
+
+
+
+
+    jsonResp = {}
+    jsonResp["status"] = "good"
+
+
+    return jsonify(jsonResp)
+
+
 @application.route("/cast_grim", methods=["GET", "POST"])
 def cast_grim():
     """

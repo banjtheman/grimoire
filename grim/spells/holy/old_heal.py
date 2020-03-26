@@ -1,4 +1,3 @@
-import streamlit as st
 import sys, argparse, logging
 import json
 import random
@@ -7,17 +6,26 @@ import pandas as pd, numpy as np
 from sklearn.model_selection import train_test_split
 
 
+
+#get data
+def mana_extract(mana_location):
+    try:
+        print(mana_location)
+        mana = pd.read_csv(mana_location)
+        return mana
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        sys.exit(-1)
+
+#heal data
 def spell(spell_inputs):
-    mana = spell_inputs
-    st.dataframe(mana)
+    logging.info("heal spell")
+    mana_location = spell_inputs["mana_location"]
+    target_string = spell_inputs["target_string"]
+    mana = mana_extract(mana_location)
 
-
-    target_string = st.selectbox(
-        'Select target for model',
-     mana.columns)
-
-    'You selected: ', target_string
-
+    logging.debug("Target data is :"+ target_string)
     target = np.array(mana[target_string])
 
     dropcol = [target_string]
@@ -62,6 +70,5 @@ def spell(spell_inputs):
     healed_data["mana"] = mana.values.tolist()
     healed_data["mana_len"] = len(mana)
 
-    if st.checkbox('Show Healed data'):
-        st.write(healed_data)
     return healed_data
+    

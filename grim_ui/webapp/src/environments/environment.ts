@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   api_url: "http://localhost:9000",
+  streamlit_url: "http://localhost:8501",
   db_url: "lol"
 };
 

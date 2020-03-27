@@ -22,20 +22,25 @@ export class ConjurePage implements OnInit {
   public new_grim_name: any;
   public new_grim_desc: any;
   public spells_dict = {}
-  public spells: any;
+
+  dtOptions: DataTables.Settings = {};
+
 
 
   constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, public alertController: AlertController) { }
 
   ngOnInit() {
+    this.dtOptions = {
+      pageLength: 20
+    };
     this.getSpells()
   }
 
-  inNewGrim(spell){
-    var spell_key = spell["spell_type"]+"_"+spell["spell_name"]
+  inNewGrim(spell) {
+    var spell_key = spell["spell_type"] + "_" + spell["spell_name"]
     var index = this.new_grim.indexOf(spell_key)
 
-    if (index == -1){
+    if (index == -1) {
       return false
     } else {
       return true
@@ -65,12 +70,12 @@ export class ConjurePage implements OnInit {
 
         //fill up spell_dict
         this.spells.forEach((spell) => {
-          
-          var spell_dict_key = spell["spell_type"]+"_"+spell["spell_name"]
+
+          var spell_dict_key = spell["spell_type"] + "_" + spell["spell_name"]
           this.spells_dict[spell_dict_key] = spell
 
         });
-        
+
 
       }, (err) => {
         console.log("ok we should back out");
@@ -86,19 +91,50 @@ export class ConjurePage implements OnInit {
 
   }
 
-  removeFromGrim(spell){
-    var spell_key = spell["spell_type"]+"_"+spell["spell_name"]
+  removeFromGrim(spell) {
+    var spell_key = spell["spell_type"] + "_" + spell["spell_name"]
     var index = this.new_grim.indexOf(spell_key)
-    this.new_grim.splice(index,1)
+    this.new_grim.splice(index, 1)
+  }
+
+  metRequirements(spell){
+
+    //check len of reqs
+    if (spell["reqs"].length == 0){
+      console.log(" it is true")
+      return true;
+    } 
+
+    var flag = true
+
+    //else check if all requirments have been added
+    spell["reqs"].forEach((req) => {
+      console.log("this is a req")
+      console.log(req)
+      console.log(this.new_grim)
+
+
+      var index = this.new_grim.indexOf(req)
+
+      if (index == -1) {
+        flag = false
+      } else {
+        console.log("go on") 
+      }
+  
+    });
+
+    return flag
+
   }
 
 
-  addToGrim(spell){
-    var spell_key = spell["spell_type"]+"_"+spell["spell_name"]
+  addToGrim(spell) {
+    var spell_key = spell["spell_type"] + "_" + spell["spell_name"]
     this.new_grim.push(spell_key)
   }
 
-  createGrim(){
+  createGrim() {
 
     console.log("Creating grim")
 
@@ -111,7 +147,7 @@ export class ConjurePage implements OnInit {
 
     var grim_spells = []
 
-    this.new_grim.forEach((spell) => { 
+    this.new_grim.forEach((spell) => {
       grim_spells.push(this.spells_dict[spell])
     });
 
@@ -124,16 +160,21 @@ export class ConjurePage implements OnInit {
     var url = this.api_url + "/create_grim"
     console.log("calling this url: " + url);
 
+    //this.utilityService.presentLoading()
+
     this.http.post(url, grim_data, { headers: headers }).toPromise()
       .then((data) => { // Success
         console.log(data)
-        this.showResults = true
-        this.results = data
+        //this.utilityService.dismissLoading()
+        this.utilityService.presentModal("Grimoire created","Complete")
+        // this.showResults = true
+        // this.results = data
 
         //refresh grims
         //this.get_grims()
 
       }, (err) => {
+        //this.utilityService.dismissLoading()
         console.log("ok we should back out");
         console.log(err);
       })

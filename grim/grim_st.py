@@ -14,7 +14,7 @@ def main():
 
     #grim_path=sys.argv[1]
 
-    st.title('Grimoire')
+   
     grim = []
 
     #load json
@@ -26,11 +26,16 @@ def main():
 
     #run spells
     print(grim["name"])
-    st.write(grim["name"])
+    st.title('Grimoire: '+grim["name"])
+    st.markdown('## '+grim["value"])
 
     spell_tomb = {}
+    
 
-    st.markdown('**Choose Mana**')
+
+    st.markdown('### Before you can cast your spells, upload your data')
+
+    # st.markdown('**Choose Mana**')
     #will add support for db and api later
     data = st.file_uploader("Choose a CSV file", type="csv")
     spell_count = 1
@@ -44,6 +49,7 @@ def main():
             spell_info = spell["spell_info"]
             spell_inputs = spell["spell_inputs"]
             spell_output = spell["spell_output"]
+            takes_mana = spell["takes_mana"]
             #print(spell_name)
 
             for spell_input in spell_inputs.keys():
@@ -60,14 +66,15 @@ def main():
 
 
             #TODO: create markdown to show name and info
-            st.write(spell_type+" "+spell_name)
-            st.write(spell_info)
+            st.markdown('## Casting spell: '+spell_type+" "+spell_name)
+            st.markdown('### '+spell_info)
+
+            # st.write(spell_type+" "+spell_name)
+            # st.write(spell_info)
             #first spell must take mana as input
-            if spell_count == 1:
+            if takes_mana:
                 spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](mana)
             else:
-                #print("here is spell input")
-                #print(spell_inputs)
                 spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
             spell_count += 1
 

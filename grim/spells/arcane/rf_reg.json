@@ -2,7 +2,9 @@
       "spell_type": "arcane",
       "spell_name": "rf_reg",
       "has_user_spell_inputs": false,
-      "spell_info": "creates rf model from mana",
+      "takes_mana": false,
+      "reqs": ["holy_heal"],
+      "spell_info": "creates Random forest model from healed data",
       "spell_inputs_metadata": [ {
           "takesMana": false,
           "input_name": "healed_data",

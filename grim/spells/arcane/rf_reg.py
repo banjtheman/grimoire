@@ -143,7 +143,7 @@ def spell(spell_inputs):
         st.write(jsonOutput)
     
 
-    st.markdown('**Predict with model**')
+    st.markdown('### Predict with model')
     predict_feats = {}
     for feat in feature_list:
         predict_feats[feat] = st.number_input('Insert a value for '+feat)
@@ -151,4 +151,4 @@ def spell(spell_inputs):
     if len(predict_feats.keys()) == len(feature_list):
         feats_df = pd.DataFrame(predict_feats, index=[0])
         model_predictions = rf.predict(feats_df)
-        st.write("Predicted "+target_string+": "+str(model_predictions[0]))
+        st.markdown("## Predicted "+target_string+": "+str(model_predictions[0]))

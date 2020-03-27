@@ -7,12 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ConjurePageRoutingModule } from './conjure-routing.module';
 
 import { ConjurePage } from './conjure.page';
+import { DataTablesModule } from 'angular-datatables';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    DataTablesModule,
     ConjurePageRoutingModule
   ],
   declarations: [ConjurePage]

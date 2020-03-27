@@ -123,8 +123,9 @@
             <th>Spell Name</th>
             <th>Spell Info</th>
             <th>Spell Type</th>
-            <th>Has user inputs?</th>
-            <th>Spell Inputs</th>
+            <th>takes mana?</th>
+            <th>Requirements</th>
+            <!-- <th>Spell Inputs</th> -->
             <th>Spell Output</th>
             <th>Add Spell</th>
           </tr>
@@ -134,8 +135,9 @@
             <td>{{spell["spell_name"]}}</td>
             <td>{{spell["spell_info"]}}</td>
             <td>{{spell["spell_type"]}}</td>
-            <td>{{spell["has_user_spell_inputs"]}}</td>
-            <td>
+            <td>{{spell["takes_mana"]}}</td>
+            <td>{{spell["reqs"]}}</td>
+            <!-- <td>
 
               <div *ngFor="let spell_input of spell['spell_inputs_metadata'];">
 
@@ -149,15 +151,20 @@
                   <li>takesDB: {{spell_input["takesDB"]}} </li>
                 </ul>
 
-              </div>
+              </div> 
 
 
 
-            </td>
+            </td> -->
             <td>{{spell["spell_output"]}}</td>
             <td>
 
-              <ion-button *ngIf="inNewGrim(spell) == false" shape="round" (click)="addToGrim(spell);">Add to Grimoire
+              <!-- metRequirements(spell) == true -->
+
+              <!-- <ion-button *ngIf="metRequirements(spell) == true " shape="round" (click)="addToGrim(spell);">Add to Grimoire
+              </ion-button> -->
+              
+              <ion-button *ngIf="inNewGrim(spell) == false && metRequirements(spell)" shape="round" (click)="addToGrim(spell);">Add to Grimoire
               </ion-button>
 
               <ion-button *ngIf="inNewGrim(spell) == true" shape="round" color="danger"

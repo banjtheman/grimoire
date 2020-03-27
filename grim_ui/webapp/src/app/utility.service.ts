@@ -26,6 +26,16 @@ export class UtilityService {
     await alert.present();
   }
 
+  async presentModal(header,status) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: status,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   async presentLoading() {
     const loading = await this.loadingCtrl.create({
       message: 'Computing...'

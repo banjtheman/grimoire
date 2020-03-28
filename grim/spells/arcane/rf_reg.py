@@ -12,6 +12,7 @@ import sklearn.metrics
 import pickle
 import random
 import streamlit as st
+import altair as alt
 
 
 
@@ -63,16 +64,16 @@ def spell(spell_inputs):
 
 
 
-
+    #should check if model exists, if it does load model
     logging.debug("Running training with these hyperparms: " + str(tuned))
 
     rf.fit(healed_data["train_features"], healed_data["train_target"])
 
     # save model output
     model_output_loc = target_string+"rf_reg_model.pkl"
-    model_output = open(model_output_loc, "wb")
-    pickle.dump(rf, model_output)
-    model_output.close()    
+    # model_output = open(model_output_loc, "wb")
+    # pickle.dump(rf, model_output)
+    # model_output.close()    
 
     #should cut off here and make new spell for metrics? or have it return a metrics field to caputre run
     #model
@@ -141,6 +142,30 @@ def spell(spell_inputs):
 
     if st.checkbox('Show rf_reg raw data'):
         st.write(jsonOutput)
+    
+
+    #show model performance
+    st.header("Model Performance")
+    st.subheader("r2: "+str(r2))
+    st.subheader("mse: "+str(mse))
+    st.subheader("RMSE: "+str(rmse))
+
+
+    st.header("Feature Importance")
+    feat_df = pd.DataFrame(feature_importances, columns = ['Feature', 'Importance']) 
+    
+    st.table(feat_df)
+
+    chart = alt.Chart(feat_df).mark_bar().encode(
+    x="Feature",
+    y="Importance"
+    ).interactive().properties(title='Feature Importance Chart').configure_title(
+    fontSize=20,
+    )
+    
+    st.altair_chart(chart, use_container_width=True)
+
+
     
 
     st.markdown('### Predict with model')

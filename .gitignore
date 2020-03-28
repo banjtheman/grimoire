@@ -5,6 +5,7 @@ test.csv
 *.pkl
 projects/
 videos/
+ESOL.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

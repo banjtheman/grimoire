@@ -6,6 +6,7 @@ test.csv
 projects/
 videos/
 ESOL.csv
+gamefaqs_new_game_buy.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

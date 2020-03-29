@@ -8,16 +8,19 @@ import json
 
 def spell(spell_inputs):
     mana = spell_inputs
-    
-    x_col = st.selectbox('Select x axis for bar chart',mana.columns)
-    y_col = st.selectbox('Select y axis for bar chart',mana.columns)
 
-    chart = alt.Chart(mana).mark_bar().encode(
-    x=x_col,
-    y=y_col,
-    tooltip=list(mana.columns)
-    ).interactive().properties(title='Bar Chart for '+x_col+","+y_col).configure_title(
-    fontSize=20,
+    x_col = st.selectbox("Select x axis for bar chart", mana.columns)
+    y_col = st.selectbox("Select y axis for bar chart", mana.columns)
+
+    chart = (
+        alt.Chart(mana)
+        .mark_bar()
+        .encode(x=x_col, y=y_col, tooltip=list(mana.columns))
+        .interactive()
+        .properties(title="Bar Chart for " + x_col + "," + y_col)
+        .configure_title(fontSize=20,)
+        .configure_axis(labelFontSize=20, titleFontSize=20)
+        .configure_legend(labelFontSize=20, titleFontSize=20)
     )
-    
+
     st.altair_chart(chart, use_container_width=True)

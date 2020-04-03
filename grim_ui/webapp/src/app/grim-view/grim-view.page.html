@@ -33,17 +33,23 @@
         </div>
 
         <ion-card *ngFor="let spell of grim['spells'];let s = index">
+          <ion-row>
+            <ion-col text-center>
+              <img src="../../assets/spell_images/{{spell['spell_type']}}/{{spell['spell_name']}}.png"
+                class="spell_image" />
+            </ion-col>
+          </ion-row>
           <ion-card-header text-center>
             <ion-card-title>
-              {{spell["spell_type"]}} - {{spell["spell_name"]}}
+              {{spell["spell_name"]}}
             </ion-card-title>
             <ion-card-subtitle>
               {{spell["spell_info"]}}
             </ion-card-subtitle>
           </ion-card-header>
-
-
         </ion-card>
+
+
         <ion-button shape="round" expand="full" (click)="castGrim(grim);">Cast Spells</ion-button>
 
 
@@ -51,15 +57,10 @@
 
       <ion-col size="8">
         <!-- Screencast here -->
-        <style>
-          iframe {
-            height: 100%;
-            width: 100%;
-            frameborder: 0;
-          }
-        </style>
-
-        <iframe src="http://localhost:8501/">
+   
+        
+        
+        <iframe *ngIf="showTest" src="http://localhost:8501/">
           <p>Your browser does not support iframes.</p>
         </iframe>
         <!-- <video height="65%" controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">

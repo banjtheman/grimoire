@@ -497,6 +497,11 @@ def create_grim():
         grim_path = "grimoire/"+grimoire["name"]+".json"
         grimoire["spell_path"] = grim_path
 
+
+        #check if grim exists
+        if os.path.exists(grim_path):
+            jsonResp["error"] = "Grimoire already exists"
+            return jsonify(jsonResp)
         #write the json to cast path
         with open(grim_path, 'w') as outfile:
             json.dump(grimoire, outfile)
@@ -810,6 +815,24 @@ def get_grims():
     return jsonify(jsonResp)
 
 
+
+def spell_display_name(spell):
+
+    if spell == "holy":
+        return "Data Cleaning (Holy)"
+    elif spell == "nature":
+        return "Data Visualization (Nature)"
+    elif spell == "arcane":
+        return "Machine Learning (Arcane)"
+    elif spell == "water":
+        return "Data Query (Water)"
+    elif spell == "air":
+        return "Map Visualization (Air)"        
+    else:
+        return "Custom (User Defined)"
+
+
+
 @application.route("/get_spells")
 def get_spells():
     """
@@ -832,6 +855,10 @@ def get_spells():
         for spell_json in file_list:
             with open(spell_json) as json_file:
                 spell_data = json.load(json_file)
+                if "spell_image" not in spell_data:
+                    #../../assets/spellbook.png
+                    possible_path = "../../assets/spell_images/"+spell_data["spell_type"]+"/"+spell_data["spell_name"]+".png"
+                    spell_data["spell_image"] = possible_path
                 spells_array.append(spell_data)
 
     except Exception as e:
@@ -843,8 +870,22 @@ def get_spells():
 
     #print("Spells array:")
     #print(spells_array)
+
+    spells_map = {}
+
+    for spell in spells_array:
+
+        spell_key = spell_display_name(spell["spell_type"])
+
+        if spell_key not in spells_map:
+            spells_map[spell_key] = []
+            spells_map[spell_key].append(spell)
+        else:
+            spells_map[spell_key].append(spell)
+
     
     jsonResp["spells"] = spells_array
+    jsonResp["spells_map"] = spells_map
 
     return jsonify(jsonResp)
 

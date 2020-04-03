@@ -7,5 +7,6 @@
       "spell_info": "displays scatter plot of data",
       "spell_inputs_metadata": [],
       "spell_inputs": {},
-      "spell_output": "scatter_plot"
+      "spell_output": "scatter_plot",
+      "spell_image" : "../../assets/spell_images/nature/scatter_plot.png"
 }

@@ -16,7 +16,7 @@ def spell(spell_inputs):
     chart = (
         alt.Chart(mana)
         .mark_rect()
-        .encode(x=x_col + ":O", y=y_col + ":O", color=z_col + ":Q",tooltip=list(mana.columns))
+        .encode(x=x_col, y=y_col, color=z_col,tooltip=list(mana.columns))
         .properties(title="Heatmap for " + x_col + "," + y_col + "," + z_col)
         .configure_title(fontSize=20,)
         .configure_axis(labelFontSize=20, titleFontSize=20)

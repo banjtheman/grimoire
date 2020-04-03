@@ -17,6 +17,7 @@ export class GrimViewPage implements OnInit {
   public grim: any;
   public api_url = environment.api_url
   public streamlit_url = environment.streamlit_url
+  public showTest = false
 
   constructor(public magicService: MagicService, public navCtrl: NavController,public utilityService: UtilityService,private http: HttpClient) { }
 
@@ -28,6 +29,11 @@ export class GrimViewPage implements OnInit {
 
 
     this.grim = this.magicService["Data"]["curr_grim"]
+  }
+
+  getSpellImage(spell){
+    let possible_path = "../../assets/spell_images/"+spell["spell_type"]+"/"+spell["spell_name"]+".png"
+    return possible_path
   }
 
   ionViewDidEnter(){
@@ -52,6 +58,7 @@ export class GrimViewPage implements OnInit {
     this.http.post(url, grim, { headers: headers }).toPromise()
       .then((data) => { // Success
         console.log(data)
+        this.showTest = true
         //open new url
         //window.open(this.streamlit_url, '_blank');
       }, (err) => {

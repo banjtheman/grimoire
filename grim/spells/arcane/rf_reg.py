@@ -237,5 +237,6 @@ def spell(spell_inputs):
     if len(predict_feats.keys()) == len(feature_list):
         feats_df = pd.DataFrame(predict_feats, index=[0])
         model_predictions = rf.predict(feats_df)
+        print("## Predicted " + target_string + ": " + str(model_predictions[0]))
         st.markdown("## Predicted " + target_string + ": " + str(model_predictions[0]))
 

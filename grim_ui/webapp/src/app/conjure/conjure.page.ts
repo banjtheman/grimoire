@@ -19,10 +19,14 @@ export class ConjurePage implements OnInit {
   public conjure_type = "grim";
   public spells: any;
   public new_grim = [];
-  public new_grim_name: any;
-  public new_grim_desc: any;
+  public new_grim_name: String = "";
+  public new_grim_desc: String = "";
   public spells_dict = {}
   public showTable = false
+  public spells_map: any;
+  public spell_view = "card"
+
+
 
   dtOptions: DataTables.Settings = {};
 
@@ -36,6 +40,34 @@ export class ConjurePage implements OnInit {
     };
     this.getSpells()
     this.resetGrim()
+  }
+
+  ifRealGrim(){
+
+    if (this.new_grim.length < 1){
+      return false
+    }
+
+    if (this.new_grim_name.length < 1){
+      return false
+    }
+
+    if (this.new_grim_desc.length < 1){
+      return false
+    }
+
+    return true
+
+
+
+
+
+  }
+
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
+    this.spell_view = ev["detail"]["value"]
+    console.log(this.spell_view)
   }
 
   inNewGrim(spell) {
@@ -68,7 +100,9 @@ export class ConjurePage implements OnInit {
         console.log("got spells")
 
         this.spells = data["spells"]
+        this.spells_map = data["spells_map"]
         console.log(this.spells)
+        console.log(this.spells_map)
 
         //fill up spell_dict
         this.spells.forEach((spell) => {
@@ -201,6 +235,15 @@ export class ConjurePage implements OnInit {
       .then((data) => { // Success
         console.log(data)
         //this.utilityService.dismissLoading()
+
+        //check if error
+        if (data["error"]) {
+          console.log("Graceful error")
+          this.utilityService.presentModelAlert(data["error"])
+          return
+        }
+
+
         this.utilityService.presentModal("Grimoire created","Complete")
         // this.showResults = true
         // this.results = data

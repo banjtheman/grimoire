@@ -6,3 +6,19 @@
  .item:hover{
     opacity: 0.5;
 }
+
+.spell_image {
+    height: 250px;
+    width: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  ion-card {
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+  }
+  
+  

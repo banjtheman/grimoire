@@ -1,4 +1,4 @@
-##### Grimoire Streamlit Runner #####
+###### Grimoire Streamlit Runner ######
 import streamlit as st 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,7 @@ def main():
             """
         st.markdown(hide_streamlit_style, unsafe_allow_html=True)
         st.markdown('### Using Sample Data')
-        data = "../sample_data/sample.csv"
+        data = "../sample_data/iris.csv"
         mana = pd.read_csv(data)
         st.write(mana)
     else:

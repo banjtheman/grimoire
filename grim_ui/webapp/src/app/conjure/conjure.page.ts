@@ -16,12 +16,13 @@ export class ConjurePage implements OnInit {
 
   public api_url = environment.api_url
   public spell_mode = "conjure"
-  public conjure_type: any;
+  public conjure_type = "grim";
   public spells: any;
   public new_grim = [];
   public new_grim_name: any;
   public new_grim_desc: any;
   public spells_dict = {}
+  public showTable = false
 
   dtOptions: DataTables.Settings = {};
 
@@ -34,6 +35,7 @@ export class ConjurePage implements OnInit {
       pageLength: 20
     };
     this.getSpells()
+    this.resetGrim()
   }
 
   inNewGrim(spell) {
@@ -76,6 +78,8 @@ export class ConjurePage implements OnInit {
 
         });
 
+        this.showTable = true
+
 
       }, (err) => {
         console.log("ok we should back out");
@@ -91,10 +95,38 @@ export class ConjurePage implements OnInit {
 
   }
 
+  resetGrim() {
+    console.log("getting spells")
+
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var url = this.api_url + "/reset_grim"
+
+
+
+    this.http.get(url, { headers: headers }).toPromise()
+      .then((data) => { // Success
+
+        console.log("reset grim")
+
+      }, (err) => {
+        console.log("problem trying to reset");
+        console.log(err);
+        //this.utilityService.presentModelAlert("Error try again")
+      })
+
+
+
+  }
+
   removeFromGrim(spell) {
     var spell_key = spell["spell_type"] + "_" + spell["spell_name"]
     var index = this.new_grim.indexOf(spell_key)
     this.new_grim.splice(index, 1)
+    this.testGrim()
   }
 
   metRequirements(spell){
@@ -132,6 +164,9 @@ export class ConjurePage implements OnInit {
   addToGrim(spell) {
     var spell_key = spell["spell_type"] + "_" + spell["spell_name"]
     this.new_grim.push(spell_key)
+    console.log(" about to test grim")
+    this.testGrim()
+    console.log(" tested grim")
   }
 
   createGrim() {
@@ -182,5 +217,56 @@ export class ConjurePage implements OnInit {
 
 
   }
+
+
+
+  testGrim() {
+
+    console.log("testing grim")
+
+    //Send post request with spells to backend
+    // POST formData to Server
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+
+    var grim_spells = []
+
+    this.new_grim.forEach((spell) => {
+      grim_spells.push(this.spells_dict[spell])
+    });
+
+
+    var grim_data = {}
+    grim_data["spells"] = grim_spells
+
+    var url = this.api_url + "/test_grim"
+    console.log("calling this url: " + url);
+
+    //this.utilityService.presentLoading()
+
+    this.http.post(url, grim_data, { headers: headers }).toPromise()
+      .then((data) => { // Success
+        console.log(data)
+        //this.utilityService.dismissLoading()
+        //this.utilityService.presentModal("Grimoire created","Complete")
+        // this.showResults = true
+        // this.results = data
+
+        //refresh grims
+        //this.get_grims()
+
+      }, (err) => {
+        //this.utilityService.dismissLoading()
+        console.log("ok we should back out");
+        console.log(err);
+      })
+
+
+
+  }
+
+
 
 }

@@ -19,7 +19,7 @@
 <ion-grid>
 
     <h2 text-center>Create new Grimoires</h2>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col offset=3 size=3>
         <ion-card (click)="change_conjure_type('grim')">
           <ion-card-header>
@@ -45,7 +45,7 @@
         </ion-card>
       </ion-col>
 
-    </ion-row>
+    </ion-row> -->
 
 
     <div *ngIf="conjure_type=='grim'">
@@ -54,7 +54,7 @@
 
       <!-- Have a table of all spells, click plus button to add?-->
 
-      <ion-list text-center>
+      <!-- <ion-list text-center>
         <ion-label>Grimoire Name:</ion-label>
         <ion-item>
           <ion-input type="text" placeholder="Name" [(ngModel)]="new_grim_name"></ion-input>
@@ -81,7 +81,7 @@
               </ion-card-subtitle>
             </ion-card-header>
 
-            <!-- will need to work out how we want to accept inputs-->
+            will need to work out how we want to accept inputs
             <ion-card-content text-center>
               <div *ngFor="let spell_input of spells_dict[spell]['spell_inputs_metadata'];">
 
@@ -110,13 +110,37 @@
           </ion-card>
 
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
+
+     
+<!-- 
       <ion-button expand="full" shape="round" (click)="createGrim();">Create Grimoire
-        </ion-button>
+        </ion-button> -->
 
 
+<ion-row>
+  <ion-col>
 
+      <ion-list text-center>
+          <ion-label>Grimoire Name:</ion-label>
+          <ion-item>
+            <ion-input type="text" placeholder="Name" [(ngModel)]="new_grim_name"></ion-input>
+          </ion-item>
+          <ion-label>Grimoire Description:</ion-label>
+          <ion-item>
+            <ion-input type="text" placeholder="Description" [(ngModel)]="new_grim_desc"></ion-input>
+          </ion-item>
+  
+  
+  
+        </ion-list>
+
+        <ion-button expand="full" shape="round" (click)="createGrim();">Create Grimoire
+          </ion-button>
+          <div *ngIf="showTable">
+
+         
       <table id="spell_table" datatable [dtOptions]="dtOptions" class="row-border hover">
         <thead>
           <tr>
@@ -173,6 +197,19 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    </ion-col>
+
+      <ion-col>
+          <style>
+              iframe { height: 100%; width: 100%; frameborder: 0; }
+          </style>
+
+      <iframe src="http://localhost:8501/">
+        <p>Your browser does not support iframes.</p>
+      </iframe>
+    </ion-col>
+      </ion-row>
 
 
 
@@ -180,6 +217,10 @@
 
 
     <div *ngIf="conjure_type=='spell'">
+
+        <!-- <iframe src="http://localhost:8501/" width="600" height="600">
+            <p>Your browser does not support iframes.</p>
+          </iframe> -->
 
 
 

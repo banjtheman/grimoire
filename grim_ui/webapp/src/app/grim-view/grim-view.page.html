@@ -10,7 +10,8 @@
 
   <ion-row class="top-content">
     <ion-col>
-      <a (click)="utilityService.navURL('/new-home')">Home</a> > <a (click)="utilityService.navURL('/library')">Library</a>
+      <a (click)="utilityService.navURL('/new-home')">Home</a> > <a
+        (click)="utilityService.navURL('/library')">Library</a>
       > {{grim["name"]}}
     </ion-col>
   </ion-row>
@@ -50,9 +51,20 @@
 
       <ion-col size="8">
         <!-- Screencast here -->
-        <video height="65%" controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
+        <style>
+          iframe {
+            height: 100%;
+            width: 100%;
+            frameborder: 0;
+          }
+        </style>
+
+        <iframe src="http://localhost:8501/">
+          <p>Your browser does not support iframes.</p>
+        </iframe>
+        <!-- <video height="65%" controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
             <source src="../../assets/videos/rf_reg.mp4" type="video/mp4" />
-           </video>
+           </video> -->
 
       </ion-col>
 

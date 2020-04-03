@@ -61,7 +61,7 @@ def get_projects():
     jsonResp["projects"] = []
     try:
         for key in r.scan_iter("project_*"):
-           print(key)
+           #print(key)
            proj_object = json.loads(r.get(key))
            jsonResp["projects"].append(proj_object)
     except Exception as e:
@@ -82,7 +82,7 @@ def get_casts():
     scan_key = "cast_"+proj_name+"*"
     try:
         for key in r.scan_iter(scan_key):
-           print(key)
+           #print(key)
            cast_object = json.loads(r.get(key))
            jsonResp["casts"].append(cast_object)
     except Exception as e:
@@ -143,8 +143,8 @@ def create_project():
     raw_data = request.data
     string_data = raw_data.decode("utf-8")
     json_data = json.loads(string_data)
-    print("Project data is...")
-    print(json_data)
+    #print("Project data is...")
+    #print(json_data)
     try:
         #proj_name = request.args.get("project_name")
         proj_name = json_data["name"]
@@ -270,9 +270,9 @@ def add_mana_source(mana_object):
                 redis_data["cols"] = list(df.columns)
                 redis_data["createdAt"] = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
 
-                print("sendt to redis")
-                print(proj_key)
-                print(str(redis_data))
+                #print("sent to redis")
+                #print(proj_key)
+                #print(str(redis_data))
 
                 r.set(proj_key, json.dumps(redis_data))
 
@@ -326,8 +326,8 @@ def add_csv_mana_source():
         json object with name of csv file processed
     """
     data = request.data
-    print("File data is...")
-    print(data)
+    #print("File data is...")
+    #print(data)
 
     proj_name = request.args.get("project_name")
     logging.info("Project name is: " + proj_name)
@@ -335,9 +335,9 @@ def add_csv_mana_source():
     csv_data = parse_form_data(data)
     #call mana function here...
 
-    print("Parsed CSV is...")
+    #print("Parsed CSV is...")
     csv_data["project_name"] = proj_name
-    print(csv_data)
+    #print(csv_data)
 
     jsonResp = add_mana_source(csv_data)
 
@@ -349,6 +349,130 @@ def add_csv_mana_source():
     # f.write(csv_data["content"])
     # f.close()
     return jsonify(jsonResp)
+
+
+
+@application.route("/reset_grim", methods=["GET", "POST"])
+def reset_test():
+    """
+    Purpose:
+        reset test grim
+    Args/Requests:
+         data = metadata needed to create grim 
+    Return:
+        json object with result of create
+    """
+    jsonResp = {}
+    try:
+        cmd = "cp test/test_run_clean.json grim_st.json"
+        os.system(cmd)
+        cmd = "cp test/test_run_clean.json test/test_run.json"
+        os.system(cmd)        
+        jsonResp["status"] = "test reset"
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+        return jsonify(jsonResp)
+
+
+    return jsonify(jsonResp)
+
+
+@application.route("/launch_test_grim", methods=["GET", "POST"])
+def launch_test_grim():
+    """
+    Purpose:
+        Launch grimoire
+    Args/Requests:
+         data = metadata needed to cast spell 
+    Return:
+        json object with result of cast
+    """
+    data = request.data
+    #hmm have streamlit run from start, and then have it just refresh
+    #instead of spawning new prorcces
+    grimoire = json.loads(data.decode('utf-8'))
+    grimoire["isTest"] = True
+    #print(grimoire["name"])
+
+    #run streamlit spell runner
+    #basicaly we want to refresh grim_st with the grim path
+
+    #we are just going to dump grim to grim_st.json
+    with open("grim_st.json", 'w') as outfile:
+        json.dump(grimoire, outfile)
+
+    # cmd = "streamlit run grim_st.py "+grimoire["spell_path"]+" &"
+    # os.system(cmd)
+    jsonResp = {}
+    jsonResp["status"] = "good"
+
+
+    return jsonify(jsonResp)
+
+
+
+@application.route("/test_grim", methods=["GET", "POST"])
+def test_grim():
+    """
+    Purpose:
+        test grim
+    Args/Requests:
+         data = metadata needed to create grim 
+    Return:
+        json object with result of create
+    """
+
+    jsonResp = {}
+    #HARDCODE projects dir
+
+    data = request.data
+    #print("spell data is...")
+    #print(data)
+    try:
+        spells = json.loads(data.decode('utf-8'))
+        spells_to_add = spells["spells"]
+        grim_path = "test/test_run.json"
+        with open(grim_path) as json_file:
+            grimoire = json.load(json_file)
+
+        #clear spells, then add 
+        grimoire["spells"] = [] 
+        grimoire["spells"].extend(spells_to_add)
+        
+        #write the json to cast path dont have to save it, but will allow for now
+        with open(grim_path, 'w') as outfile:
+            json.dump(grimoire, outfile)
+        
+        #need to trigger update for streamlit here
+        cmd = "cp test/test_run.json grim_st.json"
+        os.system(cmd)
+        #I hate it too, but no other way to auto update streamlit
+        lines = []
+        with open("grim_st.py") as infile:
+            for line in infile:
+                if "###### Grimoire Streamlit Runner ######" in line:
+                    #print("found replace")
+                    line = line.replace("###### Grimoire Streamlit Runner ######", "##### Grimoire Streamlit Runner #####")
+                elif "##### Grimoire Streamlit Runner #####" in line:
+                    #print("found replace")
+                    line = line.replace("##### Grimoire Streamlit Runner #####", "###### Grimoire Streamlit Runner ######")                    
+                lines.append(line)
+        with open("grim_st.py", 'w') as outfile:
+            for line in lines:
+                outfile.write(line)        
+
+    except Exception as e:
+        logging.info("Yikes bad error")
+        logging.error(e)
+        jsonResp["error"] = "Segfault..."+str(e)
+        return jsonify(jsonResp)
+    
+    jsonResp["status"] = "got it"
+    jsonResp["grim_path"] = grim_path
+    return jsonify(jsonResp)
+
 
 
 @application.route("/create_grim", methods=["GET", "POST"])
@@ -366,8 +490,8 @@ def create_grim():
     #HARDCODE projects dir
 
     data = request.data
-    print("File data is...")
-    print(data)
+    #print("File data is...")
+    #print(data)
     try:
         grimoire = json.loads(data.decode('utf-8'))
         grim_path = "grimoire/"+grimoire["name"]+".json"
@@ -402,7 +526,7 @@ def launch_grim():
     #hmm have streamlit run from start, and then have it just refresh
     #instead of spawning new prorcces
     grimoire = json.loads(data.decode('utf-8'))
-    print(grimoire["name"])
+    #print(grimoire["name"])
 
     #run streamlit spell runner
     #basicaly we want to refresh grim_st with the grim path
@@ -413,11 +537,6 @@ def launch_grim():
 
     # cmd = "streamlit run grim_st.py "+grimoire["spell_path"]+" &"
     # os.system(cmd)
-
-
-
-
-
     jsonResp = {}
     jsonResp["status"] = "good"
 
@@ -443,15 +562,15 @@ def cast_grim():
 
 
     data = request.data
-    print("File data is...")
-    print(data)
+    #print("File data is...")
+    #print(data)
 
     proj_name = request.args.get("project_name")
-    print("Project name is: " + proj_name)
+    #print("Project name is: " + proj_name)
 
 
     mana_source = request.args.get("mana")
-    print("Mana source is: " + mana_source)
+    #print("Mana source is: " + mana_source)
 
     grim_path = "projects/"+proj_name
 
@@ -459,7 +578,7 @@ def cast_grim():
 
     #Run the dvc invoke path?
     grimoire = json.loads(data.decode('utf-8'))
-    print(grimoire["name"])
+    #print(grimoire["name"])
 
     cast_path = grim_path+"/casts/"+grimoire["name"]+".json"
     finished_casts_json = {}
@@ -522,7 +641,7 @@ def cast_grim():
         return jsonify(jsonResp)
 
 
-    print("loading complete cast")
+    #print("loading complete cast")
     finished_casts_path = finished_casts_json["full_path"]
     time_now = finished_casts_json["time_now"]
 
@@ -545,17 +664,17 @@ def cast_grim():
 
 @application.route("/export_flask", methods=["GET", "POST"])
 def export_flask():
-    print("Exporting to flask")
+    #print("Exporting to flask")
     jsonResp = {}
     data = request.data
-    print("File data is...")
-    print(data)
+    #print("File data is...")
+    #print(data)
     grimoire = json.loads(data.decode('utf-8'))
 
 
 
     proj_name = request.args.get("project_name")
-    print("Project name is: " + proj_name)
+    #print("Project name is: " + proj_name)
 
     #make new directory
     flask_dir = "projects/"+proj_name+"/exports/flask/"
@@ -593,13 +712,13 @@ def export_flask():
     spell_dict_text = spell_dict_text.replace(",)",")")
 
     full_spell_insert_text = import_spell_text+spell_dict_text
-    print(full_spell_insert_text)
+    #print(full_spell_insert_text)
 
     lines = []
     with open(flask_dir+"app.py") as infile:
         for line in infile:
             if "####### SPELL_INSERTS #######" in line:
-                print("found replace")
+                #print("found replace")
                 line = line.replace("####### SPELL_INSERTS #######", full_spell_insert_text)
             lines.append(line)
     with open(flask_dir+"app.py", 'w') as outfile:
@@ -673,10 +792,10 @@ def get_grims():
     for file in os.listdir("grimoire"):
         if file.endswith(".json"):
             try:
-                logging.info(os.path.join("grimoire", file))
+                #logging.info(os.path.join("grimoire", file))
                 with open(os.path.join("grimoire", file)) as json_file:
                     grim = json.load(json_file)
-                    logging.info(grim)
+                    #logging.info(grim)
                     grim_array.append(grim)
 
             except Exception as e:
@@ -708,8 +827,8 @@ def get_spells():
     #screw this just us glob to get all spell.json files in spell dir
     try:
         file_list = glob.glob("spells/**/*.json")
-        print("File list:")
-        print(file_list)
+        #print("File list:")
+        #print(file_list)
         for spell_json in file_list:
             with open(spell_json) as json_file:
                 spell_data = json.load(json_file)
@@ -722,8 +841,8 @@ def get_spells():
         return jsonResp
     #return array
 
-    print("Spells array:")
-    print(spells_array)
+    #print("Spells array:")
+    #print(spells_array)
     
     jsonResp["spells"] = spells_array
 

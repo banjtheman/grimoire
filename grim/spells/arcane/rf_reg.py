@@ -32,9 +32,8 @@ def does_model_exsit(target_string):
         print("model does not exist")
         return False
 
-
+@st.cache(allow_output_mutation=True)
 def load_model(model_output_loc):
-
     rf = pickle.load(open(model_output_loc, "rb"))
     return rf
 
@@ -181,7 +180,11 @@ def spell(spell_inputs):
         with open(json_path) as json_file:
             jsonOutput = json.load(json_file)
     else:
-        train_model(rf, healed_data, target_string)
+        try:
+            train_model(rf, healed_data, target_string)
+        except:
+            st.error("Predictor does not work on string based categories like "+target_string)
+            return            
         jsonOutput = eval_model(rf, healed_data)
 
     if st.checkbox("Show rf_reg raw data"):

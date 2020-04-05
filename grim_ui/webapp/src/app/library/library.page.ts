@@ -16,6 +16,7 @@ export class LibraryPage implements OnInit {
   public api_url = environment.api_url
   public grims: any;
   public streamlit_url = environment.streamlit_url
+  public searchTerm = ""
 
 
   constructor(public magicService: MagicService, public navCtrl: NavController,public utilityService: UtilityService,private http: HttpClient) { }
@@ -25,6 +26,24 @@ export class LibraryPage implements OnInit {
   ngOnInit() {
     this.getGrims()
   }
+
+  checkSearch(grim) {
+
+    if (this.searchTerm == ""){
+      return true
+    }
+      
+    //if spell name contains string return true
+    if (grim["name"].toLowerCase().includes(this.searchTerm.toLowerCase())) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+ 
+
+
 
   viewGrim(grim){
     this.magicService.isBlank = false

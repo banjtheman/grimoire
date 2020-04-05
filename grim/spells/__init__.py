@@ -5,7 +5,6 @@ from .holy.heal import spell as heal
 from .arcane.rf_reg import spell as rf_reg
 from .arcane.svm_classifier import spell as svm_classifier
 
-
 #Nature Spells
 from .nature.histogram import spell as histogram
 from .nature.heatmap import spell as heatmap
@@ -18,6 +17,10 @@ from .nature.stacked_bar import spell as stacked_bar
 #Air spells
 from .air.plot_map import spell as plot_map
 
+#Time spells
+from .time.time_bar_chart import spell as time_bar_chart
+
+
 REGISTERED_SPELLS = dict(
     heal=heal,
     rf_reg=rf_reg,
@@ -29,5 +32,6 @@ REGISTERED_SPELLS = dict(
     area_chart=area_chart,
     stacked_bar = stacked_bar,
     svm_classifier= svm_classifier,
-    plot_map = plot_map
+    plot_map = plot_map,
+    time_bar_chart = time_bar_chart
 )

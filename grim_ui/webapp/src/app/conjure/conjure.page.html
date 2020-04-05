@@ -225,11 +225,21 @@
             <div *ngIf="spell_view=='card'" scrollY="true" class="card-view">
 
 
+              <ion-searchbar [(ngModel)]="searchTerm"></ion-searchbar>
+
+
               <!-- maybe have a switch to table view-->
               <div *ngFor="let spell_type of utilityService.keys(spells_map);">
                 <h2> {{spell_type}}</h2>
                 <ion-row>
-                  <ion-col size=4 *ngFor="let spell of spells_map[spell_type]; let i = index">
+                  <!-- <ion-col size=4 *ngFor="let spell of spells_map[spell_type]; let i = index"> -->
+
+                    <!-- check search here-->
+                    <div *ngFor="let spell of spells_map[spell_type]; let i = index">
+                    <div *ngIf="checkSearch(spell)==true">
+                      <ion-col size=4>
+                    
+
                     <ion-card text-center>
                       <ion-row>
                         <ion-col text-center>
@@ -261,6 +271,9 @@
                       </ion-card-content>
                     </ion-card>
                   </ion-col>
+                  </div>
+                </div>
+                  
                 </ion-row>
 
               </div>

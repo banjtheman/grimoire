@@ -25,6 +25,7 @@ export class ConjurePage implements OnInit {
   public showTable = false
   public spells_map: any;
   public spell_view = "card"
+  public searchTerm = ""
 
 
 
@@ -33,6 +34,21 @@ export class ConjurePage implements OnInit {
 
 
   constructor(private http: HttpClient, public magicService: MagicService, public navCtrl: NavController, public utilityService: UtilityService, public alertController: AlertController) { }
+
+
+  checkSearch(spell) {
+
+    if (this.searchTerm == ""){
+      return true
+    }
+      
+    //if spell name contains string return true
+    if (spell["spell_name"].toLowerCase().includes(this.searchTerm.toLowerCase())) {
+      return true
+    } else {
+      return false
+    }
+  }
 
   ngOnInit() {
     this.dtOptions = {

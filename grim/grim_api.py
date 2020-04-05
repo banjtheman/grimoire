@@ -828,6 +828,8 @@ def spell_display_name(spell):
         return "Data Query (Water)"
     elif spell == "air":
         return "Map Visualization (Air)"        
+    elif spell == "time":
+        return "Data Animation (Time)"
     else:
         return "Custom (User Defined)"
 

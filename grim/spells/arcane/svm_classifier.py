@@ -6,7 +6,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.svm import SVR
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import pickle
 import random
 import streamlit as st
@@ -30,7 +30,7 @@ def does_model_exsit(target_string):
         print("model does not exist")
         return False
 
-
+@st.cache(allow_output_mutation=True)
 def load_model(model_output_loc):
 
     svm_model = pickle.load(open(model_output_loc, "rb"))
@@ -65,12 +65,19 @@ def eval_model(svm_model, healed_data):
 
 
     ac_score = accuracy_score(test_target, predictions)
+    f1 = f1_score(test_target,predictions,average='weighted')
+    precision = precision_score(test_target,predictions,average='weighted')
+    recall = recall_score(test_target,predictions,average='weighted')
 
     model_output_loc = "models/svm_model_" + target_string + ".pkl"
 
     jsonOutput = {}
     jsonOutput["model_location"] = model_output_loc
     jsonOutput["ac_score"] = ac_score
+    jsonOutput["f1"] = f1
+    jsonOutput["precision"] = precision
+    jsonOutput["recall"] = recall
+
     jsonOutput["predictions"] = predictions.tolist()
 
     json_path = "models/svm_model_" + target_string + ".json"
@@ -116,7 +123,12 @@ def spell(spell_inputs):
         with open(json_path) as json_file:
             jsonOutput = json.load(json_file)
     else:
-        train_model(svm_model, healed_data, target_string)
+        try:
+            train_model(svm_model, healed_data, target_string)
+        except:
+            st.error("Classifier does not work on number based categories like "+target_string)
+            return
+
         jsonOutput = eval_model(svm_model, healed_data)
 
     if st.checkbox("Show svm raw data"):
@@ -124,7 +136,10 @@ def spell(spell_inputs):
 
     # show model performance
     st.header("Model Performance")
-    st.success("Accuracy_score: "+str(jsonOutput["ac_score"]))
+    st.success("F1 Score: "+str(jsonOutput["f1"]))
+    st.success("Accuracy: "+str(jsonOutput["ac_score"]))
+    st.success("Recall: "+str(jsonOutput["recall"]))
+    st.success("Precision: "+str(jsonOutput["precision"]))
 
 
  

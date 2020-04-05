@@ -10,11 +10,14 @@ def spell(spell_inputs):
     mana = spell_inputs
     
     x_col = st.selectbox('Select x axis for Scatter plot',mana.columns)
+    xcol_string=x_col+":O"
+    if st.checkbox("Show as continuous?",key="scatter_plot_x_is_cont"):
+        xcol_string=x_col+":Q"    
     y_col = st.selectbox('Select y axis for Scatter plot',mana.columns)
     z_col = st.selectbox('Select z axis for Scatter plot',mana.columns)
 
     chart =  alt.Chart(mana).mark_circle(size=60).encode(
-    x=x_col,
+    x=xcol_string,
     y=y_col,
     color=z_col,
     tooltip=list(mana.columns)

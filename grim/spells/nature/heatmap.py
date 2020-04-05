@@ -10,13 +10,16 @@ def spell(spell_inputs):
     mana = spell_inputs
 
     x_col = st.selectbox("Select x axis for heatmap", mana.columns)
+    xcol_string=x_col+":O"
+    if st.checkbox("Show as continuous?",key="heatmap_x_is_cont"):
+        xcol_string=x_col+":Q"
     y_col = st.selectbox("Select y axis for heatmap", mana.columns)
     z_col = st.selectbox("Select z axis for heatmap", mana.columns)
 
     chart = (
         alt.Chart(mana)
         .mark_rect()
-        .encode(x=x_col, y=y_col, color=z_col,tooltip=list(mana.columns))
+        .encode(x=xcol_string, y=y_col, color=z_col,tooltip=list(mana.columns))
         .properties(title="Heatmap for " + x_col + "," + y_col + "," + z_col)
         .configure_title(fontSize=20,)
         .configure_axis(labelFontSize=20, titleFontSize=20)

@@ -19,78 +19,68 @@
   <ion-grid>
 
     <h1 text-center>Grimoires</h1>
+    <ion-searchbar [(ngModel)]="searchTerm"></ion-searchbar>
 
     <ion-row>
       <ion-col *ngFor="let grim of grims;let i = index" size=3>
 
 
-        <ion-card>
-          <ion-row>
-            <ion-col text-center>
-              <img src="../../assets/spellbook.png"
-                class="spell_image" />
-            </ion-col>
-          </ion-row>
-          <ion-card-header text-center>
-            <ion-card-title>
-              <h1>{{grim["name"]}}</h1>
-            </ion-card-title>
-            <ion-card-subtitle>
-              <h2>{{grim["value"]}}</h2>
-            </ion-card-subtitle>
+          <ion-card *ngIf="checkSearch(grim)==true">
+            <ion-row>
+              <ion-col text-center>
+                <img src="../../assets/spellbook.png" class="spell_image" />
+              </ion-col>
+            </ion-row>
+            <ion-card-header text-center>
+              <ion-card-title>
+                <h1>{{grim["name"]}}</h1>
+              </ion-card-title>
+              <ion-card-subtitle>
+                <h2>{{grim["value"]}}</h2>
+              </ion-card-subtitle>
 
-          </ion-card-header>
+            </ion-card-header>
 
-          <ion-card-content>
-
-            <!-- <ion-card *ngFor="let spell of grim['spells'];let s = index">
-                  <ion-card-header text-center>
-                    <ion-card-title>
-                      {{spell["spell_type"]}} - {{spell["spell_name"]}}
-                    </ion-card-title>
-                    <ion-card-subtitle>
-                      {{spell["spell_info"]}}
-                    </ion-card-subtitle>
-                  </ion-card-header>
-  
-                  <ion-card-content *ngIf="s == 0" text-center>
-                    Spell inputs:
-
-                  </ion-card-content>
-                </ion-card> -->
+            <ion-card-content>
 
 
+              <div text-center>
+                <ion-row>
 
-            <div text-center>
-              <ion-row>
+                  <ion-col>
+                    <div class="tooltip">
+                      <ion-button shape="round" color="medium" (click)="viewGrim(grim)">
+                        <ion-icon name="eye"></ion-icon>
+                      </ion-button>
+                      <span class="tooltiptext">View Details</span>
+                    </div>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button shape="round" (click)="castGrim(grim);">Cast Spells</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <div class="tooltip">
+                      <ion-button shape="round" color="medium" (click)="downloadGrim(grim)">
+                        <ion-icon name="download"></ion-icon>
+                      </ion-button>
+                      <span class="tooltiptext">Download Project</span>
+                    </div>
+                  </ion-col>
 
-                <ion-col>
-                  <div class="tooltip">
-                    <ion-button shape="round" color="medium" (click)="viewGrim(grim)">
-                      <ion-icon name="eye"></ion-icon>
-                    </ion-button>
-                    <span class="tooltiptext">View Details</span>
-                  </div>
-                </ion-col>
-                <ion-col>
-                  <ion-button shape="round" (click)="castGrim(grim);">Cast Spells</ion-button>
-                </ion-col>
-                <ion-col>
-                  <div class="tooltip">
-                    <ion-button shape="round" color="medium" (click)="downloadGrim(grim)">
-                      <ion-icon name="download"></ion-icon>
-                    </ion-button>
-                    <span class="tooltiptext">Download Project</span>
-                  </div>
-                </ion-col>
+                </ion-row>
+              </div>
 
-              </ion-row>
-            </div>
+            </ion-card-content>
+          </ion-card>
 
-          </ion-card-content>
-        </ion-card>
+
 
       </ion-col>
+
+
+
+
+
 
     </ion-row>
 

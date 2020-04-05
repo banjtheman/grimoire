@@ -10,6 +10,9 @@ def spell(spell_inputs):
     mana = spell_inputs
 
     x_col = st.selectbox("Select x axis for area chart", mana.columns)
+    xcol_string=x_col+":O"
+    if st.checkbox("Show as continuous?",key="area_chart_x_is_cont"):
+        xcol_string=x_col+":Q"    
     y_col = st.selectbox("Select y axis for area chart", mana.columns)
     z_col = st.selectbox("Select z axis for area chart", mana.columns)
 
@@ -17,7 +20,7 @@ def spell(spell_inputs):
         alt.Chart(mana)
         .mark_area()
         .encode(
-            x=x_col, y="sum(" + y_col + ")", color=z_col, tooltip=list(mana.columns)
+            x=xcol_string, y="sum(" + y_col + ")", color=z_col, tooltip=list(mana.columns)
         )
         .interactive()
         .properties(title="Area Chart for " + x_col + "," + y_col + "," + z_col)

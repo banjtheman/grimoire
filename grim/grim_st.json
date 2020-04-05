@@ -1,1 +1,1 @@
-{"name": "test run", "isTest": "True","value": "test your grimoire", "spells": [], "spell_path": "test/test_run.json"}
+{"name": "Animated_bar_chart", "spell_path": "grimoire/Animated_bar_chart.json", "spells": [{"has_user_spell_inputs": true, "reqs": [], "spell_image": "../../assets/spell_images/time/time_bar_chart.png", "spell_info": "displays animated bar chart of data", "spell_inputs": {}, "spell_inputs_metadata": [], "spell_name": "time_bar_chart", "spell_output": "time_bar_chart", "spell_type": "time", "takes_mana": true}], "value": "Run a time seris bar chart"}

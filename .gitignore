@@ -9,6 +9,10 @@ ESOL.csv
 gamefaqs_new_game_buy.csv
 models/
 
+sample_data/fasttext.csv
+streamlit/test.py
+grim/grimoire/
+grim/lol.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

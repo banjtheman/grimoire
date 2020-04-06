@@ -25,12 +25,11 @@ def spell(spell_inputs):
 
     try:
         logging.debug("dropping features with axis")
-        features = mana.drop(dropcol, axis=1)
+        features = mana.drop(dropcol, axis=1).dropna()
     except:
         logging.debug("dropping features with NO axis")
-        features = mana.drop(dropcol, axis=0)
+        features = mana.drop(dropcol, axis=0).dropna()
 
-    #wtf
     reducer = umap.UMAP()
     embedding = reducer.fit_transform(features)
     embedding.shape
@@ -42,7 +41,7 @@ def spell(spell_inputs):
 
     chart = (
         alt.Chart(embedding_df)
-        .mark_circle(size=60)
+        .mark_circle(size=100)
         .encode(x="x", y="y", color=target_string, tooltip=list(embedding_df.columns))
         .interactive()
         .properties(title="UMAP Embedding")

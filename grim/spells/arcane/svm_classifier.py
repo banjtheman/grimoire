@@ -15,6 +15,15 @@ import os.path
 from os import path
 import json
 
+from yellowbrick.classifier import ClassificationReport
+from yellowbrick.datasets import load_occupancy
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+from PIL import Image
+
+from yellowbrick.features.radviz import radviz
+
 
 def download_model(target_string):
     print("todo")
@@ -38,7 +47,31 @@ def load_model(model_output_loc):
 
 
 def train_model(svm_model, healed_data, target_string):
-    svm_model.fit(healed_data["train_features"], healed_data["train_target"])
+    #svm_model.fit(healed_data["train_features"], healed_data["train_target"])s
+
+    # y = LabelEncoder().fit_transform(healed_data["train_target"])
+    label_classes = list(set(healed_data["train_target"]))
+    try:
+        visualizer = ClassificationReport(svm_model, classes=label_classes,cmap="YlGn")
+    except Exception as e:
+        st.error("Viz error: "+str(e))
+        
+
+    try:
+        visualizer.fit(healed_data["train_features"], healed_data["train_target"])
+    except Exception as e:
+        st.error("Fit error: "+str(e))
+        
+    try:
+        visualizer.score(healed_data["test_features"],healed_data["test_target"])
+    except Exception as e:
+        st.error("Score error: "+str(e))
+        
+
+    visualizer.show()
+    # st.write(visualizer)
+    st.pyplot(plt.savefig("models/svm_model_eval_" + target_string + ".png"))
+    #plt.savefig("models/svm_model_eval_" + target_string + ".png")
 
     # save model output
     model_output_loc = "models/svm_model_" + target_string + ".pkl"
@@ -90,13 +123,16 @@ def eval_model(svm_model, healed_data):
 
 def spell(spell_inputs):
 
-    # print("rf_reg heal data")
+    # print("rf_reg heal data")s
 
     randInt = random.randint(1, 200)
 
     svm_model = svm.LinearSVC(random_state=randInt)
 
-
+    # svm_model = Pipeline([
+    # ('one_hot_encoder', OneHotEncoder()),
+    # ('estimator', svm.LinearSVC(random_state=randInt))
+    # ])
     # train the model!!!!
     # print("Heres model data")
     healed_data = spell_inputs["healed_data"]
@@ -116,10 +152,13 @@ def spell(spell_inputs):
     # should check if model exists, if it does load model
     jsonOutput = {}
 
+    show_model_eval = None
+
     if does_model_exsit(target_string):
         model_output_loc = "models/svm_model_" + target_string + ".pkl"
         svm_model = load_model(model_output_loc)
         json_path = "models/svm_model_" + target_string + ".json"
+        show_model_eval = "models/svm_model_eval_" + target_string + ".png"
         with open(json_path) as json_file:
             jsonOutput = json.load(json_file)
     else:
@@ -134,6 +173,9 @@ def spell(spell_inputs):
     if st.checkbox("Show svm raw data"):
         st.write(jsonOutput)
 
+    
+
+
     # show model performance
     st.header("Model Performance")
     st.success("F1 Score: "+str(jsonOutput["f1"]))
@@ -141,7 +183,9 @@ def spell(spell_inputs):
     st.success("Recall: "+str(jsonOutput["recall"]))
     st.success("Precision: "+str(jsonOutput["precision"]))
 
-
+    if show_model_eval is not None:
+        image = Image.open(show_model_eval)
+        st.image(image,caption='Model',use_column_width=True)
  
 
     # bars = alt.Chart(feat_df).mark_bar().encode(y="Feature", x="Importance")

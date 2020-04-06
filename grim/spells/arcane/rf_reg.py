@@ -16,7 +16,10 @@ import altair as alt
 import os.path
 from os import path
 import json
-
+from sklearn.linear_model import Ridge
+from yellowbrick.regressor import ResidualsPlot
+import matplotlib.pyplot as plt
+from PIL import Image
 
 def download_model(target_string):
     print("todo")
@@ -39,8 +42,23 @@ def load_model(model_output_loc):
 
 
 def train_model(rf, healed_data, target_string):
-    rf.fit(healed_data["train_features"], healed_data["train_target"])
+    #rf.fit(healed_data["train_features"], healed_data["train_target"])
+    model = Ridge()
+    visualizer = ResidualsPlot(rf)
+    try:
+        visualizer.fit(healed_data["train_features"], healed_data["train_target"])
+    except Exception as e:
+        st.error("Fit error: "+str(e))
+        
+    try:
+        visualizer.score(healed_data["test_features"],healed_data["test_target"])
+    except Exception as e:
+        st.error("Score error: "+str(e))
+        
 
+    visualizer.show()
+    # st.write(visualizer)
+    st.pyplot(plt.savefig("models/rf_reg_eval_" + target_string + ".png"))
     # save model output
     model_output_loc = "models/rf_reg_" + target_string + "_rf_reg_model.pkl"
     model_output = open(model_output_loc, "wb")
@@ -172,17 +190,22 @@ def spell(spell_inputs):
 
     # should check if model exists, if it does load model
     jsonOutput = {}
+    show_model_eval = None
+
+    st.header("Model Performance")
 
     if does_model_exsit(target_string):
         model_output_loc = "models/rf_reg_" + target_string + "_rf_reg_model.pkl"
         rf = load_model(model_output_loc)
         json_path = "models/rf_reg_" + target_string + "_rf_reg_model.json"
+        show_model_eval = "models/rf_reg_eval_" + target_string + ".png"
         with open(json_path) as json_file:
             jsonOutput = json.load(json_file)
     else:
         try:
             train_model(rf, healed_data, target_string)
-        except:
+        except Exception as e:
+            st.error(e)
             st.error("Predictor does not work on string based categories like "+target_string)
             return            
         jsonOutput = eval_model(rf, healed_data)
@@ -191,17 +214,17 @@ def spell(spell_inputs):
         st.write(jsonOutput)
 
     # show model performance
-    st.header("Model Performance")
-    st.subheader("r2: " + str(jsonOutput["r2"]))
-    st.subheader("mse: " + str(jsonOutput["mse"]))
-    st.subheader("rmse: " + str(jsonOutput["rmse"]))
+    
+    # st.subheader("r2: " + str(jsonOutput["r2"]))
+    # st.subheader("mse: " + str(jsonOutput["mse"]))
+    # st.subheader("rmse: " + str(jsonOutput["rmse"]))
 
-    st.header("Feature Importance")
+    
     feat_df = pd.DataFrame(
         jsonOutput["feature_importances"], columns=["Feature", "Importance"]
     )
 
-    st.write(feat_df)
+    
 
     # bars = alt.Chart(feat_df).mark_bar().encode(y="Feature", x="Importance")
 
@@ -215,6 +238,12 @@ def spell(spell_inputs):
 
     # chart = bars+text
 
+    if show_model_eval is not None:
+        image = Image.open(show_model_eval)
+        st.image(image,caption='Model',use_column_width=True)
+
+    st.header("Feature Importance")
+    # st.write(feat_df)
 
     chart = (
         alt.Chart(feat_df)

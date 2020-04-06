@@ -46,7 +46,11 @@ def spell(spell_inputs):
     featuresarr = np.array(features)
     randInt = random.randint(1, 200)
 
-    train_features, test_features, train_target, test_target = train_test_split(
+    # train_features, test_features, train_target, test_target = train_test_split(
+    #     featuresarr, target, test_size=0.75, random_state=randInt
+    # )  # what data to split and how to do it.
+
+    test_features, train_features, test_target, train_target,  = train_test_split(
         featuresarr, target, test_size=0.75, random_state=randInt
     )  # what data to split and how to do it.
 

@@ -24,3 +24,4 @@ def spell(spell_inputs):
     )
 
     st.altair_chart(chart, use_container_width=True)
+    return None,mana

@@ -7,6 +7,10 @@ from .arcane.svm_classifier import spell as svm_classifier
 from .arcane.umap_grim import spell as umap_grim
 from .arcane.fasttext_grim import spell as fasttext_grim
 
+
+#Water Spells
+from .water.highlight import spell as highlight
+
 #Nature Spells
 from .nature.histogram import spell as histogram
 from .nature.heatmap import spell as heatmap
@@ -39,5 +43,6 @@ REGISTERED_SPELLS = dict(
     time_bar_chart = time_bar_chart,
     pair_plot = pair_plot,
     umap_grim = umap_grim,
-    fasttext_grim = fasttext_grim
+    fasttext_grim = fasttext_grim,
+    highlight = highlight
 )

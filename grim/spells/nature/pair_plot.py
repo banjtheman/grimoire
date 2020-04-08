@@ -21,3 +21,5 @@ def spell(spell_inputs):
         st.write("Showing base plot")
     st.pyplot()
 
+    return None,mana
+

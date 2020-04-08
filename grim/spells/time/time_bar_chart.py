@@ -82,3 +82,5 @@ def spell(spell_inputs):
             time_chart.altair_chart(curr_chart, use_container_width=True)
             # sleep
             time.sleep(time_interval)
+    
+    return None,mana

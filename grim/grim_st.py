@@ -1,4 +1,4 @@
-##### Grimoire Streamlit Runner #####
+###### Grimoire Streamlit Runner ######
 import streamlit as st 
 import numpy as np
 import pandas as pd
@@ -170,9 +170,10 @@ def main():
             #first spell must take mana as input
             try:
                 if takes_mana:
-                    spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](mana)
+                    #would have to do a check here? or pass in mana
+                    spell_tomb[spell_output], mana = REGISTERED_SPELLS[spell_name](mana)
                 else:
-                    spell_tomb[spell_output] = REGISTERED_SPELLS[spell_name](spell_inputs)
+                    spell_tomb[spell_output], mana = REGISTERED_SPELLS[spell_name](spell_inputs)
             except Exception as e:
                 show_error = st.checkbox("Show Error details?",key="spell_cast_errors")
                 if show_error:

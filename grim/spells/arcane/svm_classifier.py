@@ -188,28 +188,6 @@ def spell(spell_inputs):
         st.image(image,caption='Model',use_column_width=True)
  
 
-    # bars = alt.Chart(feat_df).mark_bar().encode(y="Feature", x="Importance")
-
-    # text = bars.mark_text(
-    # align='left',
-    # baseline='middle',
-    # dx=3  # Nudges text to right so it doesn't appear on top of the bar
-    # ).encode(
-    # text='Feature'
-    # )
-
-    # chart = bars+text
-
-
-    # chart = (
-    #     alt.Chart(feat_df)
-    #     .mark_bar()
-    #     .encode(y=alt.Y('Feature', sort='-x'), x="Importance",tooltip=list(feat_df.columns))
-    #     .properties(title="Feature Importance Chart")
-    #     .configure_title(fontSize=20,)
-    # ).properties(height=700)
-    # st.altair_chart(chart, use_container_width=True)
-
     if st.button("Retrain Model"):
         train_model(svm_model, healed_data, target_string)
         jsonOutput = eval_model(svm_model, healed_data)
@@ -227,4 +205,6 @@ def spell(spell_inputs):
         model_predictions = svm_model.predict(feats_df)
         print("## Predicted " + target_string + ": " + str(model_predictions[0]))
         st.markdown("## Predicted " + target_string + ": " + str(model_predictions[0]))
+    
+    return svm_model,mana
 

@@ -26,4 +26,5 @@ def spell(spell_inputs):
         df = pd.DataFrame(np.random.randn(10, 2) / [50, 50] + [38.90, -77.03], columns=["lat", "lon"])
         st.write(df)
         #st.map(df)
+    return None,mana
 

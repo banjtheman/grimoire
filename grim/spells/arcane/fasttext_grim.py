@@ -141,3 +141,4 @@ def spell(spell_inputs):
                     + str(preds[1][counter])
                 )
                 counter += 1
+    return model,mana

@@ -271,4 +271,6 @@ def spell(spell_inputs):
         model_predictions = rf.predict(feats_df)
         print("## Predicted " + target_string + ": " + str(model_predictions[0]))
         st.markdown("## Predicted " + target_string + ": " + str(model_predictions[0]))
+    
+    return rf,mana
 

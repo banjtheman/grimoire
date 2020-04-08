@@ -68,4 +68,4 @@ def spell(spell_inputs):
 
     if st.checkbox('Show Healed data'):
         st.write(healed_data)
-    return healed_data
+    return healed_data,mana

@@ -20,13 +20,18 @@ from .nature.line_chart import spell as line_chart
 from .nature.area_chart import spell as area_chart
 from .nature.stacked_bar import spell as stacked_bar
 from .nature.pair_plot import spell as pair_plot
+from .nature.three_d_plot import spell as three_d_plot
+
 
 #Air spells
 from .air.plot_map import spell as plot_map
+from .air.choropleth_map import spell as choropleth_map
+from .air.country_map import spell as country_map
 
 #Time spells
 from .time.time_bar_chart import spell as time_bar_chart
-
+from .time.time_line_chart import spell as time_line_chart
+from .time.animate_bubble import spell as animate_bubble
 
 REGISTERED_SPELLS = dict(
     heal=heal,
@@ -41,8 +46,13 @@ REGISTERED_SPELLS = dict(
     svm_classifier= svm_classifier,
     plot_map = plot_map,
     time_bar_chart = time_bar_chart,
+    time_line_chart = time_line_chart,
+    animate_bubble = animate_bubble,
+    three_d_plot = three_d_plot,
     pair_plot = pair_plot,
     umap_grim = umap_grim,
     fasttext_grim = fasttext_grim,
-    highlight = highlight
+    highlight = highlight,
+    choropleth_map = choropleth_map,
+    country_map = country_map
 )

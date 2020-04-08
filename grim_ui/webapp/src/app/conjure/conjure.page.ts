@@ -52,7 +52,7 @@ export class ConjurePage implements OnInit {
 
   ngOnInit() {
     this.dtOptions = {
-      pageLength: 20
+      pageLength: 10
     };
     this.getSpells()
     this.resetGrim()

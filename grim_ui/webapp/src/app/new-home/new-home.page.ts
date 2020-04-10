@@ -22,6 +22,10 @@ export class NewHomePage implements OnInit {
     //this.resetGrim()
   }
 
+  // ionViewDidEnter(){
+  //   this.resetGrim()
+  // }
+
   resetGrim() {
     console.log("getting spells")
 

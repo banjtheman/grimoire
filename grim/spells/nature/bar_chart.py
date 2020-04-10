@@ -16,17 +16,17 @@ def spell(spell_inputs):
     y_col = st.selectbox("Select y axis for bar chart", mana.columns)
     z_col = st.selectbox("Select z axis for bar chart", mana.columns)
 
+    if st.checkbox("Show chart?", key="bar_chart_show"):
+        chart = (
+            alt.Chart(mana)
+            .mark_bar()
+            .encode(x=xcol_string, y=y_col, color=z_col,tooltip=list(mana.columns))
+            .interactive()
+            .properties(title="Bar Chart for " + x_col + "," + y_col)
+            .configure_title(fontSize=20,)
+            .configure_axis(labelFontSize=20, titleFontSize=20)
+            .configure_legend(labelFontSize=20, titleFontSize=20)
+        )
 
-    chart = (
-        alt.Chart(mana)
-        .mark_bar()
-        .encode(x=xcol_string, y=y_col, color=z_col,tooltip=list(mana.columns))
-        .interactive()
-        .properties(title="Bar Chart for " + x_col + "," + y_col)
-        .configure_title(fontSize=20,)
-        .configure_axis(labelFontSize=20, titleFontSize=20)
-        .configure_legend(labelFontSize=20, titleFontSize=20)
-    )
-
-    st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, use_container_width=True)
     return None,mana

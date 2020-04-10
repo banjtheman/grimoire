@@ -84,15 +84,18 @@ def set_mana(mana_choice):
                 return mana
     elif mana_choice =="Free text":
         st.write("Free text")
-        st.error("todo")
+        mana = st.text_area("Enter Data")
+        return mana   
     elif mana_choice =="Database":
         st.write("Database")
         st.error("todo")
     elif mana_choice =="API":
         st.write("API")
         st.error("todo")
-
-
+    elif mana_choice =="Data Files":
+        return "Data Files"
+    elif mana_choice =="None":
+        return "None"
     else:
         st.balloons()
         st.error("Congrats you broke the system")
@@ -124,7 +127,7 @@ def main():
         mana = pd.read_csv(data)
         st.write(mana)
     else:
-        mana_choices = ["CSV","JSON","Free text","Image","Database","API"]
+        mana_choices = ["CSV","JSON","Free text","Image","Database","API","Data Files","None"]
         
         mana_choice = st.selectbox("Select data format", mana_choices)
         try:
@@ -144,9 +147,17 @@ def main():
 
         #the spell dicates the input?
     spell_count = 1
+
+    st.sidebar.title('Grimoire: '+grim["name"])
+    image = Image.open("../grim_ui/webapp/src/assets/spellbook.png")
+    #
+    st.sidebar.image(image,use_column_width=True,format="png")
     if mana is not None:
 
         #mana = pd.read_csv(data)
+        if st.sidebar.checkbox("Add markdown at start?",key="add_markdown-start-"+str(spell_count)):
+            markdown_text = st.sidebar.text_area("Enter Markdown Text",key="markdown-start-text-"+str(spell_count))
+            st.markdown(markdown_text)
 
         for spell in grim["spells"]:
             spell_name = spell["spell_name"]
@@ -163,7 +174,7 @@ def main():
                     #spell input is in tomb, replace value
                     spell_inputs[spell_input] = spell_tomb[spell_input]
 
-            #TODO: create markdown to show name and info
+    
             st.markdown('## Casting spell: '+spell_type+" "+spell_name)
             st.markdown('### '+spell_info)
 
@@ -174,6 +185,10 @@ def main():
                     spell_tomb[spell_output], mana = REGISTERED_SPELLS[spell_name](mana)
                 else:
                     spell_tomb[spell_output], mana = REGISTERED_SPELLS[spell_name](spell_inputs)
+                
+                if st.sidebar.checkbox("Add markdown after spell "+spell_name+"?",key="add_markdown-end-"+str(spell_count)):
+                    markdown_text = st.sidebar.text_area("Enter Markdown Text",key="markdown-end-text-"+str(spell_count))
+                    st.markdown(markdown_text)
             except Exception as e:
                 show_error = st.checkbox("Show Error details?",key="spell_cast_errors")
                 if show_error:

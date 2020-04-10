@@ -8,7 +8,7 @@ videos/
 ESOL.csv
 gamefaqs_new_game_buy.csv
 models/
-
+data_files/
 sample_data/fasttext.csv
 streamlit/test.py
 grim/grimoire/

@@ -16,20 +16,21 @@ def spell(spell_inputs):
     y_col = st.selectbox("Select y axis for heatmap", mana.columns)
     z_col = st.selectbox("Select z axis for heatmap", mana.columns)
 
-    chart = (
-        alt.Chart(mana)
-        .mark_rect()
-        .encode(x=xcol_string, y=y_col, color=z_col,tooltip=list(mana.columns))
-        .properties(title="Heatmap for " + x_col + "," + y_col + "," + z_col)
-        .configure_title(fontSize=20,)
-        .configure_axis(labelFontSize=20, titleFontSize=20)
-        .configure_legend(labelFontSize=20, titleFontSize=20)
-    )
-
-    # text = chart.mark_text(baseline="middle").encode(
-    #     text=z_col, color=alt.value("black")
-    # )
-
-    st.altair_chart(chart, use_container_width=True)
+    if st.checkbox("Show chart?", key="heatmap_show"):
+        chart = (
+            alt.Chart(mana)
+            .mark_rect()
+            .encode(x=xcol_string, y=y_col, color=z_col,tooltip=list(mana.columns))
+            .properties(title="Heatmap for " + x_col + "," + y_col + "," + z_col)
+            .configure_title(fontSize=20,)
+            .configure_axis(labelFontSize=20, titleFontSize=20)
+            .configure_legend(labelFontSize=20, titleFontSize=20)
+        )
+    
+        # text = chart.mark_text(baseline="middle").encode(
+        #     text=z_col, color=alt.value("black")
+        # )
+    
+        st.altair_chart(chart, use_container_width=True)
     return None,mana
 

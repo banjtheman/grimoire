@@ -50,6 +50,10 @@ export class ConjurePage implements OnInit {
     }
   }
 
+  ionViewDidEnter(){
+    this.resetGrim()
+  }
+
   ngOnInit() {
     this.dtOptions = {
       pageLength: 10

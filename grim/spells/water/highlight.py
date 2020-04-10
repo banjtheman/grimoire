@@ -131,13 +131,4 @@ def spell(spell_inputs):
                     mana_clone=mana_clone,
                 )
             )
-
-        # if st.checkbox("Set highlighted as current data?"):
-        #     mana = mana_clone
-
-    # hmm might have to come back to this
-    # if st.checkbox("Set highlighted as current data?"):
-    #     mana_clone = pd.DataFrame( np.random.randn(10, 20),columns=('col %d' % i for i in range(20)))
-    #     mana = mana_clone
-
     return None, mana

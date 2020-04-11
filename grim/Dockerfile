@@ -10,16 +10,25 @@ RUN pip install -r /tmp/docker_environment/python_packages.txt
 RUN apt-get update; apt-get install -y $(awk '{print $1'} /tmp/docker_environment/linux_packages.txt)
 RUN bash /tmp/docker_environment/custom.sh
 
-# Copy Files
-COPY app.py /home/
+
+# Copy Grimoire Files
 COPY wsgi.py /home/
 COPY grim*.py /home/
 COPY startup.sh /home/
 
 ADD spells /home/spells
+ADD helpers /home/helpers
+ADD .streamlit /home/.streamlit 
+ADD sample_data /home/sample_data
+ADD test /home/test
+ADD test/test_run_clean.json  /home/grim_st.json
+ADD grim_ui/html /var/www/html
+ADD sample_grims /home/grimoire
+ADD assets /home/assets
+#copy nginx files
 
 
-EXPOSE 9000
+EXPOSE 8501 9000 9005
 
 WORKDIR /home/
 

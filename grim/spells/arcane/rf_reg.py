@@ -272,5 +272,5 @@ def spell(spell_inputs):
         print("## Predicted " + target_string + ": " + str(model_predictions[0]))
         st.markdown("## Predicted " + target_string + ": " + str(model_predictions[0]))
     
-    return rf,mana
+    return rf,raw_data
 

@@ -206,5 +206,5 @@ def spell(spell_inputs):
         print("## Predicted " + target_string + ": " + str(model_predictions[0]))
         st.markdown("## Predicted " + target_string + ": " + str(model_predictions[0]))
     
-    return svm_model,mana
+    return svm_model,raw_data
 

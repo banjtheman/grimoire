@@ -8,3 +8,17 @@ setuptools
 requests-toolbelt
 redis
 sklearn
+plotly-express
+seaborn
+yellowbrick
+altair
+umap
+umap-learn
+spacy
+scispacy
+fasttext
+graphviz
+Pillow
+tensorflow
+tensorflow_hub
+streamlit

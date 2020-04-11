@@ -4,7 +4,6 @@ import altair as alt
 import streamlit as st
 import sys, argparse, logging
 import json
-import fasttext
 import os.path
 from os import path
 

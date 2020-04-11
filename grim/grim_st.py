@@ -104,8 +104,12 @@ def set_mana(mana_choice):
 def main():
     grim = []
     grim_path = "grim_st.json"
-    with open(grim_path) as json_file:
-        grim = json.load(json_file)
+    try:
+        with open(grim_path) as json_file:
+            grim = json.load(json_file)
+    except:
+        st.error("No grim_st.json file")
+        return
 
     print(grim["name"])
     st.title("Grimoire: " + grim["name"])
@@ -121,7 +125,7 @@ def main():
             """
         st.markdown(hide_streamlit_style, unsafe_allow_html=True)
         st.markdown("### Using Sample Data")
-        data = "../sample_data/iris.csv"
+        data = "sample_data/iris.csv"
         mana = pd.read_csv(data)
         st.write(mana)
     else:
@@ -151,9 +155,11 @@ def main():
     spell_count = 1
 
     st.sidebar.title("Grimoire: " + grim["name"])
-    image = Image.open("../grim_ui/webapp/src/assets/spellbook.png")
+    image = Image.open("assets/spellbook.png")
     st.sidebar.image(image, use_column_width=True, format="png")
     if mana is not None:
+
+        st.write(mana)
 
         # mana = pd.read_csv(data)
         if st.sidebar.checkbox(

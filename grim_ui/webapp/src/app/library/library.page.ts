@@ -27,6 +27,11 @@ export class LibraryPage implements OnInit {
     this.getGrims()
   }
 
+  //TODO
+  downloadGrim(grim){
+    console.log(grim)
+  }
+
   checkSearch(grim) {
 
     if (this.searchTerm == ""){

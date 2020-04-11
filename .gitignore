@@ -13,6 +13,7 @@ sample_data/fasttext.csv
 streamlit/test.py
 grim/grimoire/
 grim/lol.txt
+grim/grim_ui/html/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

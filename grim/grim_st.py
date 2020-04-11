@@ -127,7 +127,7 @@ def main():
         st.markdown("### Using Sample Data")
         data = "sample_data/iris.csv"
         mana = pd.read_csv(data)
-        st.write(mana)
+        #st.write(mana)
     else:
         mana_choices = [
             "CSV",
